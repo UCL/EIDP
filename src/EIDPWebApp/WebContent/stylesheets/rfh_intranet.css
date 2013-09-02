@@ -1,0 +1,22 @@
+body#sidepanel {
+    background-color: #d0d7e1;
+}
+
+body#sponsors {
+    background-color: white;
+}
+
+tr.even {
+    background-color: #b4c7e5;
+}
+
+tr#toppanel {
+    background-color: #e8ebf9;
+}
+
+div.single {
+    line-height: 12pt;
+    padding: 2pt 0;
+}
+
+

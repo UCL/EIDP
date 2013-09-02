@@ -1,0 +1,11 @@
+td.label {
+    cursor: pointer;
+}
+
+td.sort {
+    font-weight: bold;
+}
+
+td.label:hover {
+    font-weight: bold;
+}

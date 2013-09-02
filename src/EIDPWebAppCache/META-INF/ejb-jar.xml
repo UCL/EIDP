@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by Dominic Veit 20030423 10:00:00 -->
+<!DOCTYPE ejb-jar PUBLIC "-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN" "http://java.sun.com/dtd/ejb-jar_2_0.dtd">
+<ejb-jar>
+    <display-name>EIDPWebAppCache</display-name>
+    <enterprise-beans>
+        <session>
+            <ejb-name>ejb/EIDPWebAppCache</ejb-name>
+            <home>com.eidp.webctrl.WebAppCache.EIDPWebAppCacheHomeRemote</home>
+            <remote>com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote</remote>
+            <ejb-class>com.eidp.webctrl.WebAppCache.EIDPWebAppCache</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <security-identity>
+                <use-caller-identity/>
+            </security-identity>
+        </session>
+    </enterprise-beans>
+    <assembly-descriptor>
+        <container-transaction>
+            <method>
+                <ejb-name>ejb/EIDPWebAppCache</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+        </container-transaction>
+    </assembly-descriptor>
+</ejb-jar> 

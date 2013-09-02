@@ -1,0 +1,49 @@
+td {
+	font-size: 10pt;
+}
+
+.cpDayColumnHeader {
+	font-size: 9pt;
+	text-align: center;
+}
+
+.cpOtherMonthDate {
+	text-align: center;
+	text-decoration: none;
+	color: #0080ff;
+}
+
+.cpCurrentMonthDate {
+	text-align: center;
+	text-decoration: none;
+	background-color: #c0cfff;
+	color: #4a4dba;
+}
+
+.cpCurrentDate {
+	text-align: center;
+	text-decoration: none;
+	font-weight: bold;
+	background-color: #dbdcff;
+	color: blue;
+}
+
+td.cpMonthNavigation {
+	text-align: center;
+	color: black;
+}
+
+a.cpMonthNavigation {
+	color: #313391;
+	font-weight: bold;
+}
+
+a.cpYearNavigation {
+	color: #313391;
+	font-weight: bold;
+}
+
+.cpTodayText {
+	color: #313391;
+	text-decoration: none;
+}

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+    <filter>
+        <filter-name>com.eidp.webctrl.AuthFilter</filter-name>
+        <display-name>EIDP Authentication Filter</display-name>
+        <description>EIDP Authentication Filter</description>
+        <filter-class>com.eidp.webctrl.AuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>com.eidp.webctrl.AuthFilter</filter-name>
+        <servlet-name>Controller</servlet-name>
+    </filter-mapping>
+    <listener>
+        <listener-class>com.eidp.core.DB.DBMapping</listener-class>
+    </listener>
+    <listener>
+        <listener-class>com.eidp.webctrl.WebAppCache.EIDPWebAppCache</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>Controller</servlet-name> 
+        <servlet-class>com.eidp.webctrl.Controller</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>com.eidp.webctrl.Login</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>webdav</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.WebdavServlet</servlet-class>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>listings</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>readonly</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Controller</servlet-name>
+        <url-pattern>/servlet/com.eidp.webctrl.Controller</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/servlet/com.eidp.webctrl.Login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>webdav</servlet-name>
+        <url-pattern>/webdav/files/*</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.htm</welcome-file>
+    </welcome-file-list>
+    <error-page>
+        <exception-type>java.io.FileNotFoundException</exception-type>
+        <location>/EIDPException.html</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.rmi.RemoteException</exception-type>
+        <location>/RemoteException.html</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.security.AccessControlException</exception-type>
+        <location>/EIDPAccessControllException.html</location>
+    </error-page>
+    <ejb-ref>
+        <description>DBMapping Reference</description>
+        <ejb-ref-name>DBMapping</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>com.eidp.core.DB.DBMappingHomeRemote</home>
+        <remote>com.eidp.core.DB.DBMappingRemote</remote>
+    </ejb-ref>
+    <ejb-ref>
+        <description>EIDPWebAppCache Reference</description>
+        <ejb-ref-name>EIDPWebAppCache</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>com.eidp.webctrl.WebAppCache.EIDPWebAppCacheHomeRemote</home>
+        <remote>com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote</remote>
+    </ejb-ref>
+</web-app>
