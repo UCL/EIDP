@@ -7,25 +7,25 @@
 
     <!-- PATHS -->
     
-    <property location="sources/EIDPLib" name="lib"/>
+    <property location="src/EIDPLib" name="lib"/>
     <property location="build/EIDPLib" name="EIDPLib"/>
         
-    <property location="sources/EIDPServicesBuilder" name="builder"/>
+    <property location="src/EIDPServicesBuilder" name="builder"/>
     <property location="build/EIDPServicesBuilder" name="EIDPServicesBuilder"/>
         
-    <property location="sources/EIDPCore" name="core"/>
+    <property location="src/EIDPCore" name="core"/>
     <property location="build/EIDPCore" name="EIDPCore"/>
         
-    <property location="sources/EIDPWebApp" name="webapp"/>
+    <property location="src/EIDPWebApp" name="webapp"/>
     <property location="build/EIDPWebApp" name="EIDPWebApp"/>
         
-    <property location="sources/EIDPWebAppCache" name="webappcache"/>
+    <property location="src/EIDPWebAppCache" name="webappcache"/>
     <property location="build/EIDPWebAppCache" name="EIDPWebAppCache"/>
         
-    <property location="sources/EIDPServices" name="services"/>
+    <property location="src/EIDPServices" name="services"/>
     <property location="build/EIDPServices" name="EIDPServices"/>
         
-    <property location="sources/EIDPCoreApp" name="coreapp"/>
+    <property location="src/EIDPCoreApp" name="coreapp"/>
     <property location="build/EIDPCoreApp" name="EIDPCoreApp"/>
         
     <property location="build" name="build"/>
