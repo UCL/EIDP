@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant" basedir="." default="init" name="EIDP">
+
+    <!-- VERSION -->
+
+    <property name="VERSION" value="3"/>
+
+    <!-- PATHS -->
+    
+    <property location="src/EIDPLib" name="lib"/>
+    <property location="build/EIDPLib" name="EIDPLib"/>
+        
+    <property location="src/EIDPServicesBuilder" name="builder"/>
+    <property location="build/EIDPServicesBuilder" name="EIDPServicesBuilder"/>
+        
+    <property location="src/EIDPCore" name="core"/>
+    <property location="build/EIDPCore" name="EIDPCore"/>
+        
+    <property location="src/EIDPWebApp" name="webapp"/>
+    <property location="build/EIDPWebApp" name="EIDPWebApp"/>
+        
+    <property location="src/EIDPWebAppCache" name="webappcache"/>
+    <property location="build/EIDPWebAppCache" name="EIDPWebAppCache"/>
+        
+    <property location="src/EIDPServices" name="services"/>
+    <property location="build/EIDPServices" name="EIDPServices"/>
+        
+    <property location="src/EIDPCoreApp" name="coreapp"/>
+    <property location="build/EIDPCoreApp" name="EIDPCoreApp"/>
+        
+    <property location="build" name="build"/>
+    <property location="dist" name="dist"/>
+    
+    <!-- LIBS -->
+    <property location="lib" name="libdir"/>
+
+    <path id="build.classpath">
+      <fileset dir="${libdir}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+
+    <!-- OLD LIB 1.4
+    <property location="${libs-basedir}/j2ee.jar" name="j2ee_libs"/>
+    -->
+    <!-- UKPIN
+    <property location="/opt/SUNWappserver-2.1/lib/j2ee.jar" name="j2ee_libs"/>
+    -->
+    <!-- Intranet j2ee.jar lib >
+    <property location="${libs-basedir}/ejb-api-3.0.jar" name="j2ee_libs"/>
+    <property location="${libs-basedir}/soap-2.3.jar" name="soap_libs"/>
+    -->
+
+    <target name="init">
+        <tstamp/>
+        <delete dir="build"/>
+        <delete dir="dist"/>
+        <mkdir dir="${build}"/>
+        <mkdir dir="${EIDPLib}"/>
+        <mkdir dir="${EIDPServicesBuilder}"/>
+        <mkdir dir="${EIDPCore}"/>
+        <mkdir dir="${EIDPWebApp}"/>
+        <mkdir dir="${EIDPWebApp}/images"/>
+        <mkdir dir="${EIDPWebApp}/staticweb"/>
+        <mkdir dir="${EIDPWebApp}/stylesheets"/>
+        <mkdir dir="${EIDPWebApp}/javascript"/>
+        <mkdir dir="${EIDPWebApp}/files"/>
+        <mkdir dir="${EIDPWebApp}/files/scores"/>
+        <mkdir dir="${EIDPWebApp}/WEB-INF"/>
+        <mkdir dir="${EIDPWebApp}/WEB-INF/lib"/>
+        <mkdir dir="${EIDPWebApp}/WEB-INF/classes"/>
+        <mkdir dir="${EIDPWebAppCache}"/>
+        <mkdir dir="${EIDPServices}"/>
+        <mkdir dir="${EIDPServices}/WEB-INF"/>
+        <mkdir dir="${EIDPServices}/WEB-INF/lib"/>
+        <mkdir dir="${EIDPServices}/WEB-INF/classes"/>
+        <mkdir dir="${EIDPCoreApp}"/>
+        <mkdir dir="${EIDPCoreApp}/META-INF"/>
+        <mkdir dir="${dist}"/>
+    </target>
+    
+    <target name="resolve" description="--> retrieve dependencies with ivy">
+        <ivy:settings file="ivy-settings.xml" />
+        <ivy:resolve />
+	<ivy:retrieve />
+    </target>
+
+    <!-- ============ -->
+    <!-- EIDPCoreApp 3 -->
+    <!-- ============ -->
+    
+    <!-- EIDPLib -->
+    <target depends="EIDPLib_Compile" name="EIDPLib_Dist">
+        <jar basedir="${EIDPLib}" jarfile="${dist}/EIDPLib.jar"/>
+    </target>
+    <target depends="init" name="EIDPLib_Compile">
+        <javac source="1.5" target="1.5" destdir="${EIDPLib}" srcdir="${lib}"/>
+    </target>
+    
+    <!-- EIDPServicesBuilder -->
+    <target depends="EIDPServicesBuilder_Compile,EIDPLib_Dist" name="EIDPServicesBuilder_Dist">
+        <jar basedir="${EIDPServicesBuilder}" jarfile="${dist}/EIDPServicesBuilder.jar"/>
+    </target>
+    <target depends="EIDPLib_Compile,resolve" name="EIDPServicesBuilder_Compile">
+        <javac source="1.5" target="1.5" destdir="${EIDPServicesBuilder}" srcdir="${builder}">
+            <classpath>
+                <path refid="build.classpath"/>
+                <pathelement path="${EIDPLib}"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <!-- EIDPCore -->
+    <target depends="EIDPCore_Compile,EIDPLib_Dist,EIDPServicesBuilder_Dist" name="EIDPCore_Dist">
+        <jar basedir="${EIDPCore}" jarfile="${dist}/EIDPCore${VERSION}.jar"/>
+    </target>
+    <target depends="EIDPLib_Compile,EIDPServicesBuilder_Compile" name="EIDPCore_Compile">
+        <javac source="1.5" target="1.5" destdir="${EIDPCore}" srcdir="${core}">
+            <classpath>
+                <path refid="build.classpath"/>
+                <pathelement path="${EIDPServicesBuilder}"/>
+                <pathelement path="${EIDPLib}"/>
+            </classpath>
+        </javac>
+        <copy filtering="false" todir="${EIDPCore}/META-INF" overwrite="true">
+            <fileset dir="${core}/META-INF">
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <!-- EIDPWebAppCache -->
+    <target depends="EIDPWebAppCache_Compile,EIDPCore_Dist" name="EIDPWebAppCache_Dist">
+        <jar basedir="${EIDPWebAppCache}" jarfile="${dist}/EIDPWebAppCache${VERSION}.jar"/>
+    </target>
+    <target depends="EIDPCore_Compile" name="EIDPWebAppCache_Compile">
+        <javac source="1.5" target="1.5" destdir="${EIDPWebAppCache}" srcdir="${webappcache}">
+            <classpath>
+                <pathelement path="${EIDPLib}"/>
+		<path refid="build.classpath"/>
+            </classpath>
+        </javac>
+        <copy filtering="false" todir="${EIDPWebAppCache}/META-INF" overwrite="true">
+            <fileset dir="${webappcache}/META-INF">
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <!-- EIDPWebApp -->
+    <target depends="EIDPWebApp_Compile,EIDPWebAppCache_Dist,EIDPCore_Dist" name="EIDPWebApp_Dist">
+        <jar basedir="${EIDPWebApp}" jarfile="${dist}/EIDPWebApp${VERSION}.war"/>
+    </target>
+    <target depends="EIDPWebAppCache_Compile,EIDPCore_Compile" name="EIDPWebApp_Compile">
+        <copy filtering="false" todir="${EIDPWebApp}/images" overwrite="true">
+            <fileset dir="${webapp}/WebContent/images">
+                <include name="*.jpg"/>
+                <include name="*.gif"/>
+                <include name="*.png"/>
+            </fileset>
+        </copy>
+        <copy filtering="false" todir="${EIDPWebApp}/javascript" overwrite="true">
+            <fileset dir="${webapp}/WebContent/javascript">
+                <include name="*.js"/>
+            </fileset>
+        </copy>
+        <copy filtering="false" todir="${EIDPWebApp}/staticweb" overwrite="true">
+            <fileset dir="${webapp}/WebContent/staticweb">
+                <include name="*.html"/>
+            </fileset>
+        </copy>
+        <!--
+         <copy filtering="false" todir="${EIDPWebApp}/files" overwrite="true">
+            <fileset dir="${webapp}/WebContent/files">
+                <include name="*.*"/>
+            </fileset>
+        </copy>
+        -->
+        <copy filtering="false" todir="${EIDPWebApp}/stylesheets" overwrite="true">
+            <fileset dir="${webapp}/WebContent/stylesheets">
+                <include name="*.css"/>
+            </fileset>
+        </copy>
+        <copy filtering="false" todir="${EIDPWebApp}/WEB-INF" overwrite="true">
+            <fileset dir="${webapp}/WebContent/WEB-INF">
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+        <!--
+        <copy filtering="false" todir="${EIDPWebApp}/WEB-INF/lib" overwrite="true">
+            <fileset dir="${webapp}/WebContent/WEB-INF/lib">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="projects/EIDPMod_Search/dist">
+                <include name="EIDPMod_Search.jar"/>
+            </fileset>
+            <fileset dir="projects/EIDPMod_FileManager/dist">
+                <include name="EIDPMod_FileManager.jar"/>
+            </fileset>
+            <fileset dir="${libs-basedir}/modlib">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+        -->
+        <copy filtering="false" todir="${EIDPWebApp}" overwrite="true">
+            <fileset dir="${webapp}/WebContent">
+                <include name="*.html"/>
+                <include name="*.jsp"/>
+            </fileset>
+        </copy>
+        <javac source="1.5" target="1.5" destdir="${EIDPWebApp}/WEB-INF/classes" srcdir="${webapp}/src">
+            <classpath>
+                <path refid="build.classpath"/>
+                <pathelement path="${EIDPCore}"/>
+                <pathelement path="${EIDPWebAppCache}"/>
+                <fileset dir="${EIDPWebApp}/WEB-INF/lib">
+                    <include name="*.jar"/>
+                </fileset>
+                <!--
+                <fileset dir="${libs-basedir}/ext">
+                    <include name="*.jar" />
+                </fileset>
+                -->
+                <pathelement path="${EIDPLib}"/>
+            </classpath>
+        </javac>
+    </target>   
+
+    <!-- EIDPServices -->
+    <target depends="EIDPServices_Compile" name="EIDPServices_Dist">
+        <jar basedir="${EIDPServices}" jarfile="${dist}/EIDPServices${VERSION}.war"/>
+    </target>
+    <target depends="EIDPCore_Compile" name="EIDPServices_Compile">
+        <copy filtering="false" todir="${EIDPServices}/WEB-INF" overwrite="true">
+            <fileset dir="${services}/WebContent/WEB-INF">
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+        <!--
+        <copy filtering="false" todir="${EIDPServices}/WEB-INF/lib" overwrite="true">
+            <fileset dir="${services}/WebContent/WEB-INF/lib">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+        -->
+        <javac source="1.5" target="1.5" destdir="${EIDPServices}/WEB-INF/classes" srcdir="${services}/src">
+            <classpath>
+                <pathelement path="${EIDPCore}"/>
+                <fileset dir="${EIDPServices}/WEB-INF/lib">
+                    <include name="*.jar"/>
+                </fileset>
+		<path refid="build.classpath"/>
+                <pathelement path="${EIDPLib}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- EIDPCoreApp -->
+    <target depends="EIDPServices_Dist,EIDPWebApp_Dist" name="EIDPCoreApp_Dist">
+        <copy filtering="false" todir="${EIDPCoreApp}" overwrite="true">
+            <fileset dir="${dist}">
+                <include name="EIDPCore${VERSION}.jar"/>
+                <include name="EIDPWebAppCache${VERSION}.jar"/>
+                <include name="EIDPWebApp${VERSION}.war"/>
+                <include name="EIDPServices${VERSION}.war"/>
+            </fileset>
+        </copy>
+        <copy filtering="false" todir="${EIDPCoreApp}/META-INF" overwrite="true">
+            <fileset dir="${coreapp}/META-INF">
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+        <jar basedir="${EIDPCoreApp}" jarfile="${dist}/EIDPCoreApp${VERSION}.ear"/>
+    </target>
+    
+</project>

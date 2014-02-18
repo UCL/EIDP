@@ -1,0 +1,10 @@
+<ivysettings>
+  <settings defaultResolver="default"/>
+
+  <resolvers>
+    <chain name="default">
+      <ibiblio name="java.net2" root="http://download.java.net/maven/2/" m2compatible="true"/>
+      <ibiblio name="public" m2compatible="true"/>
+    </chain>
+  </resolvers>
+</ivysettings>
