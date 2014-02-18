@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="../" default="init" name="EIDP">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" basedir="./" default="init" name="EIDP">
 
     <!-- VERSION -->
 
     <property name="VERSION" value="3"/>
+
+    <property name="http.agent" value="Apache Ivy/2.3"/>
 
     <!-- PATHS -->
     
@@ -32,7 +34,7 @@
     <property location="dist" name="dist"/>
     
     <!-- LIBS -->
-    <property location="libs" name="libs-basedir" />
+    <property location="lib" name="libs-basedir" />
     <property location="libs" name="libs-extdir" />
     <!-- OLD LIB 1.4
     <property location="${libs-basedir}/j2ee.jar" name="j2ee_libs"/>
@@ -43,8 +45,8 @@
     <!-- Intranet j2ee.jar lib -->
     <property location="j2ee/Intranet/j2ee.jar" name="j2ee_libs"/>
     <!-- Intranet -->
-    <property location="${libs-basedir}/soap.jar" name="soap_libs"/>
-    
+    <property location="${libs-basedir}/soap-2.3.jar" name="soap_libs"/>
+
     <target name="init">
         <tstamp/>
         <delete dir="build"/>
@@ -73,6 +75,11 @@
         <mkdir dir="${dist}"/>
     </target>
     
+    <target name="resolve" description="--> retrieve dependencies with ivy">
+        <ivy:resolve />
+	<ivy:retrieve />
+    </target>
+
     <!-- ============ -->
     <!-- EIDPCoreApp 3 -->
     <!-- ============ -->
