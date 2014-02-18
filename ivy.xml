@@ -5,6 +5,11 @@
 <info organisation="UCL" module="EIDP"/>
 <dependencies>
 <dependency org="soap" name="soap" rev="2.3"/>
-<dependency org="javax.j2ee" name="j2ee" rev="1.4"/>
+<dependency org="javax.ejb" name="ejb-api" rev="3.0"/>
+<dependency org="javax.transaction" name="jta" rev="1.0.1B"/>
+<dependency org="javax" name="javaee-web-api" rev="6.0"/>
+<dependency org="jfreechart" name="jfreechart" rev="1.0.0"/>
+<dependency org="org.apache.xmlgraphics" name="batik-svggen" rev="1.7"/>
+<dependency org="org.apache.xmlgraphics" name="batik-dom" rev="1.7"/>
 </dependencies>
 </ivy-module>
