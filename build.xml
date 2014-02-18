@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:ivy="antlib:org.apache.ivy.ant" basedir="./" default="init" name="EIDP">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" basedir="." default="init" name="EIDP">
 
     <!-- VERSION -->
 
@@ -33,8 +33,6 @@
     
     <!-- LIBS -->
     <property location="lib" name="libdir"/>
-    <property location="lib" name="libs-basedir" />
-    <property location="libs" name="libs-extdir" />
 
     <path id="build.classpath">
       <fileset dir="${libdir}">
@@ -48,10 +46,10 @@
     <!-- UKPIN
     <property location="/opt/SUNWappserver-2.1/lib/j2ee.jar" name="j2ee_libs"/>
     -->
-    <!-- Intranet j2ee.jar lib -->
+    <!-- Intranet j2ee.jar lib >
     <property location="${libs-basedir}/ejb-api-3.0.jar" name="j2ee_libs"/>
-    <!-- Intranet -->
     <property location="${libs-basedir}/soap-2.3.jar" name="soap_libs"/>
+    -->
 
     <target name="init">
         <tstamp/>
@@ -103,7 +101,7 @@
     <target depends="EIDPServicesBuilder_Compile,EIDPLib_Dist" name="EIDPServicesBuilder_Dist">
         <jar basedir="${EIDPServicesBuilder}" jarfile="${dist}/EIDPServicesBuilder.jar"/>
     </target>
-    <target depends="EIDPLib_Compile" name="EIDPServicesBuilder_Compile">
+    <target depends="EIDPLib_Compile,resolve" name="EIDPServicesBuilder_Compile">
         <javac source="1.5" target="1.5" destdir="${EIDPServicesBuilder}" srcdir="${builder}">
             <classpath>
                 <path refid="build.classpath"/>
@@ -138,7 +136,6 @@
     <target depends="EIDPCore_Compile" name="EIDPWebAppCache_Compile">
         <javac source="1.5" target="1.5" destdir="${EIDPWebAppCache}" srcdir="${webappcache}">
             <classpath>
-                <pathelement path="${j2ee_libs}"/>
                 <pathelement path="${EIDPLib}"/>
 		<path refid="build.classpath"/>
             </classpath>
@@ -214,8 +211,6 @@
         <javac source="1.5" target="1.5" destdir="${EIDPWebApp}/WEB-INF/classes" srcdir="${webapp}/src">
             <classpath>
                 <path refid="build.classpath"/>
-                <pathelement path="${j2ee_libs}"/>
-                <pathelement path="${soap_libs}"/>
                 <pathelement path="${EIDPCore}"/>
                 <pathelement path="${EIDPWebAppCache}"/>
                 <fileset dir="${EIDPWebApp}/WEB-INF/lib">
@@ -250,7 +245,6 @@
         -->
         <javac source="1.5" target="1.5" destdir="${EIDPServices}/WEB-INF/classes" srcdir="${services}/src">
             <classpath>
-                <pathelement path="${j2ee_libs}"/>
                 <pathelement path="${EIDPCore}"/>
                 <fileset dir="${EIDPServices}/WEB-INF/lib">
                     <include name="*.jar"/>
