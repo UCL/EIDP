@@ -273,4 +273,8 @@
         <jar basedir="${EIDPCoreApp}" jarfile="${dist}/EIDPCoreApp${VERSION}.ear"/>
     </target>
     
+    <target name="test">
+    	<echo>Apache Ant test task required by Travis CI</echo>
+    </target>
+    
 </project>
