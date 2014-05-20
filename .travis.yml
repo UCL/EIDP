@@ -1,6 +1,7 @@
 language: java
 before_install: ant init-ivy
 install: ant resolve
+script: ant EIDPCoreApp_Dist
 jdk:
   - oraclejdk7
 notifications:
