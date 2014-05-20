@@ -6,3 +6,10 @@ jdk:
   - oraclejdk7
 notifications:
   email: false
+deploy:
+  provider: releases
+  api-key: "39258d95274362cbfe882c8f3044c5f41c07944b"
+  file: "dist/EIDPCoreApp3.ear"
+  skip_cleanup: true
+  on:
+    branch: master
