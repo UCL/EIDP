@@ -6,15 +6,14 @@ install:
 script: 
 - ant EIDPCoreApp_Dist
 - ls dist
-jdk:
-  - oraclejdk7
-notifications:
+jdk: 
+- oraclejdk7
+notifications: 
   email: false
-deploy:
+deploy: 
   provider: releases
-  api-key: "39258d95274362cbfe882c8f3044c5f41c07944b"
-  file: "dist/EIDPCoreApp3.ear"
-  skip_cleanup: true
-  on:
-    tags: true
-    branch: master
+  api_key: 
+    secure: v8JEqNkQIp5/f4Ddyj4AXXIVUpiNDKO8XPxWx+CDshbRkEnFvQTv20OVvWyieapp/4bLZqJ7K1Bp4uU6ka+9sigD01ASxB1p7/HtkOnNIDhyTPwbIoXy/zYiqGzciSiuPMsaLYY9wC9VrPqYyu/SzP4oHQe+Js0TW9uxVb0bxno=
+  file: dist/EIDPCoreApp3.ear
+  "on": 
+    repo: UCL/EIDP
