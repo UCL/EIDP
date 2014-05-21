@@ -14,10 +14,11 @@ before_deploy:
 deploy: 
   provider: releases
   api_key: 
-    secure: v8JEqNkQIp5/f4Ddyj4AXXIVUpiNDKO8XPxWx+CDshbRkEnFvQTv20OVvWyieapp/4bLZqJ7K1Bp4uU6ka+9sigD01ASxB1p7/HtkOnNIDhyTPwbIoXy/zYiqGzciSiuPMsaLYY9wC9VrPqYyu/SzP4oHQe+Js0TW9uxVb0bxno=
-  file: dist/EIDPCoreApp3.ear
-  "on": 
+  - secure: "v8JEqNkQIp5/f4Ddyj4AXXIVUpiNDKO8XPxWx+CDshbRkEnFvQTv20OVvWyieapp/4bLZqJ7K1Bp4uU6ka+9sigD01ASxB1p7/HtkOnNIDhyTPwbIoXy/zYiqGzciSiuPMsaLYY9wC9VrPqYyu/SzP4oHQe+Js0TW9uxVb0bxno="
+  file: Readme.md
+  on: 
     tags: true
+    all_branches: true
     repo: UCL/EIDP
 after_deploy:
 - ls dist
