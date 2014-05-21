@@ -1,7 +1,11 @@
 language: java
 before_install: ant init-ivy
-install: ant resolve
-script: ant EIDPCoreApp_Dist
+install: 
+- ant resolve
+- echo ${TRAVIS_BUILD_DIR}
+script: 
+- ant EIDPCoreApp_Dist
+- ls dist
 jdk:
   - oraclejdk7
 notifications:
