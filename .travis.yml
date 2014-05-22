@@ -1,4 +1,4 @@
-language: java
+language: ruby
 before_install: ant init-ivy
 install: 
 - ant resolve
@@ -9,26 +9,12 @@ jdk:
 - oraclejdk7
 notifications: 
   email: false
-language: ruby
-rvm:
-- 2.0.0
-before_deploy: 
-- ls dist
+after_success: 
 - cp dist/EIDPCoreApp3.ear .
 - cp dist/EIDPCore3.jar .
 - cp dist/EIDPLib.jar .
 - ls
-deploy: 
-  edge: true
-  provider: releases
-  api_key: 
-  - secure: "v8JEqNkQIp5/f4Ddyj4AXXIVUpiNDKO8XPxWx+CDshbRkEnFvQTv20OVvWyieapp/4bLZqJ7K1Bp4uU6ka+9sigD01ASxB1p7/HtkOnNIDhyTPwbIoXy/zYiqGzciSiuPMsaLYY9wC9VrPqYyu/SzP4oHQe+Js0TW9uxVb0bxno="
-  file: 
-  - EIDPCoreApp3.ear
-  - EIDPCore3.jar
-  skip_cleanup: true
-  on: 
-    tags: true
-    all_branches: true
-after_deploy:
-- ls
+- travis/github-release.sh "$TRAVIS_REPO_SLUG" "$(git describe)" EIDP*.?ar
+env: 
+  matrix: 
+    secure: CXU0POvIYf27nxJxpsVocrAQHHTav6l5hC6c5AXnDIJRyN0XtZTmqYkWqsN0zRZ5rrtW9965+Hb29YGwF04rF8hW3JTjncI78w+ouh7thjbOln5mdW71HkMJ7Hb2hDF1LFOBeSREyg+8CL4RQoa335lRo5vWvacc3kOm1x6o4yc=
