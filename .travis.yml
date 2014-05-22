@@ -14,17 +14,16 @@ before_deploy:
 - cp dist/EIDPCoreApp3.ear .
 - cp dist/EIDPCore3.jar .
 - cp dist/EIDPLib.jar .
+- ls
 deploy: 
   provider: releases
   api_key: 
   - secure: "v8JEqNkQIp5/f4Ddyj4AXXIVUpiNDKO8XPxWx+CDshbRkEnFvQTv20OVvWyieapp/4bLZqJ7K1Bp4uU6ka+9sigD01ASxB1p7/HtkOnNIDhyTPwbIoXy/zYiqGzciSiuPMsaLYY9wC9VrPqYyu/SzP4oHQe+Js0TW9uxVb0bxno="
-  file:
-  - EIDPLib.jar
-  - EIDPCore3.jar
-  - EIDPCoreApp3.ear
+  file: EIDPCoreApp3.ear
   on: 
     tags: true
     all_branches: true
     repo: UCL/EIDP
 after_deploy:
 - ls dist
+- ls
