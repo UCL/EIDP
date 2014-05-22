@@ -19,17 +19,16 @@ before_deploy:
 - cp dist/EIDPLib.jar .
 - ls
 deploy: 
+  edge: true
   provider: releases
   api_key: 
   - secure: "v8JEqNkQIp5/f4Ddyj4AXXIVUpiNDKO8XPxWx+CDshbRkEnFvQTv20OVvWyieapp/4bLZqJ7K1Bp4uU6ka+9sigD01ASxB1p7/HtkOnNIDhyTPwbIoXy/zYiqGzciSiuPMsaLYY9wC9VrPqYyu/SzP4oHQe+Js0TW9uxVb0bxno="
   file: 
-  - EIDPLib.jar
   - EIDPCoreApp3.ear
   - EIDPCore3.jar
   skip_cleanup: true
   on: 
     tags: true
-    branch: master
-    repo: UCL/EIDP
+    all_branches: true
 after_deploy:
 - ls
