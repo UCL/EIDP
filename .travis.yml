@@ -1,4 +1,4 @@
-language: ruby
+language: java
 before_install: ant init-ivy
 install: 
 - ant resolve
@@ -14,6 +14,7 @@ after_success:
 - cp dist/EIDPCore3.jar .
 - cp dist/EIDPLib.jar .
 - ls
+- chmod +x travis/github-release.sh
 - travis/github-release.sh "$TRAVIS_REPO_SLUG" "$(git describe)" EIDP*.?ar
 env: 
   matrix: 
