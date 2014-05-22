@@ -11,7 +11,7 @@ notifications:
   email: false
 language: ruby
 rvm:
-- 2.1.0
+- 2.0.0
 before_deploy: 
 - ls dist
 - cp dist/EIDPCoreApp3.ear .
@@ -26,9 +26,10 @@ deploy:
   - EIDPLib.jar
   - EIDPCoreApp3.ear
   - EIDPCore3.jar
+  skip_cleanup: true
   on: 
     tags: true
-    all_branches: true
+    branch: master
     repo: UCL/EIDP
 after_deploy:
 - ls
