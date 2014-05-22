@@ -9,6 +9,9 @@ jdk:
 - oraclejdk7
 notifications: 
   email: false
+language: ruby
+rvm:
+- 2.1.0
 before_deploy: 
 - ls dist
 - cp dist/EIDPCoreApp3.ear .
