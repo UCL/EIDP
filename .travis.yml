@@ -8,7 +8,8 @@ script:
 jdk: 
 - oraclejdk7
 notifications: 
-  email: false
+  email: 
+  - d.guzman@ucl.ac.uk
 after_success: 
 - cp dist/EIDPCoreApp3.ear .
 - cp dist/EIDPCore3.jar .
