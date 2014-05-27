@@ -25,6 +25,7 @@
         <servlet-name>Login</servlet-name>
         <servlet-class>com.eidp.webctrl.Login</servlet-class>
     </servlet>
+    <!-- Webdav servlet 
     <servlet>
         <servlet-name>webdav</servlet-name>
         <servlet-class>org.apache.catalina.servlets.WebdavServlet</servlet-class>
@@ -41,6 +42,7 @@
             <param-value>false</param-value>
         </init-param>
     </servlet>
+    -->
     <servlet-mapping>
         <servlet-name>Controller</servlet-name>
         <url-pattern>/servlet/com.eidp.webctrl.Controller</url-pattern>
