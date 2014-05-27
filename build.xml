@@ -290,6 +290,7 @@
             </fileset>
         </copy>
         <copy filtering="false" file="${dist}/EIDPLib.jar" todir="${EIDPCoreApp}/lib" overwrite="true"/>
+        <copy filtering="false" file="${libdir}/soap-2.3.jar" todir="${EIDPCoreApp}/lib" overwrite="true"/>
         <jar basedir="${EIDPCoreApp}" jarfile="${dist}/EIDPCoreApp${VERSION}.ear"/>
     </target>
     
