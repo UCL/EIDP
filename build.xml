@@ -94,6 +94,7 @@
         <mkdir dir="${EIDPServices}/WEB-INF/classes"/>
         <mkdir dir="${EIDPCoreApp}"/>
         <mkdir dir="${EIDPCoreApp}/META-INF"/>
+        <mkdir dir="${EIDPCoreApp}/lib"/>
         <mkdir dir="${dist}"/>
     </target>
     
@@ -288,6 +289,7 @@
                 <include name="*.xml"/>
             </fileset>
         </copy>
+        <copy filtering="false" file="${dist}/EIDPLib.jar" todir="${EIDPCoreApp}/lib" overwrite="true"/>
         <jar basedir="${EIDPCoreApp}" jarfile="${dist}/EIDPCoreApp${VERSION}.ear"/>
     </target>
     
