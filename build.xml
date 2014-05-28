@@ -299,10 +299,7 @@
         <copy filtering="false" file="${dist}/EIDPLib.jar" todir="${EIDPCoreApp}/lib" overwrite="true"/>
         <copy filtering="false" file="${libdir}/soap-2.3.jar" todir="${EIDPCoreApp}/lib" overwrite="true"/>
         <jar basedir="${EIDPCoreApp}" jarfile="${dist}/EIDPCoreApp${VERSION}.ear"/>
-    </target>
-    
-    <!-- EIDPDataNode -->
-    <target depends="EIDPServices_Dist,EIDPWebApp_Dist" name="EIDPDataNode_Dist">
+        
         <copy filtering="false" file="${dist}/EIDPCore${VERSION}.jar" todir="${EIDPDataNode}" overwrite="true"/>
         <copy filtering="false" file="${coreapp}/META-INF/datanode-application.xml" tofile="${EIDPDataNode}/META-INF/application.xml" overwrite="true"/>
         <copy filtering="false" file="${dist}/EIDPLib.jar" todir="${EIDPDataNode}/lib" overwrite="true"/>
