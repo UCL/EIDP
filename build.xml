@@ -45,6 +45,7 @@
         
     <property location="src/EIDPCoreApp" name="coreapp"/>
     <property location="build/EIDPCoreApp" name="EIDPCoreApp"/>
+    <property location="build/EIDPDataNode" name="EIDPDataNode"/>
         
     <property location="build" name="build"/>
     <property location="dist" name="dist"/>
@@ -95,6 +96,9 @@
         <mkdir dir="${EIDPCoreApp}"/>
         <mkdir dir="${EIDPCoreApp}/META-INF"/>
         <mkdir dir="${EIDPCoreApp}/lib"/>
+        <mkdir dir="${EIDPDataNode}"/>
+        <mkdir dir="${EIDPDataNode}/META-INF"/>
+        <mkdir dir="${EIDPDataNode}/lib"/>
         <mkdir dir="${dist}"/>
     </target>
     
@@ -284,14 +288,25 @@
                 <include name="EIDPServices${VERSION}.war"/>
             </fileset>
         </copy>
+        <copy filtering="false" file="${coreapp}/META-INF/coreapp-application.xml" tofile="${EIDPDataNode}/META-INF/application.xml" overwrite="true"/>
+        <!--
         <copy filtering="false" todir="${EIDPCoreApp}/META-INF" overwrite="true">
             <fileset dir="${coreapp}/META-INF">
                 <include name="*.xml"/>
             </fileset>
         </copy>
+        -->
         <copy filtering="false" file="${dist}/EIDPLib.jar" todir="${EIDPCoreApp}/lib" overwrite="true"/>
         <copy filtering="false" file="${libdir}/soap-2.3.jar" todir="${EIDPCoreApp}/lib" overwrite="true"/>
         <jar basedir="${EIDPCoreApp}" jarfile="${dist}/EIDPCoreApp${VERSION}.ear"/>
+    </target>
+    
+    <!-- EIDPDataNode -->
+    <target depends="EIDPServices_Dist,EIDPWebApp_Dist" name="EIDPDataNode_Dist">
+        <copy filtering="false" file="${dist}/EIDPCore${VERSION}.jar" todir="${EIDPDataNode}" overwrite="true"/>
+        <copy filtering="false" file="${coreapp}/META-INF/datanode-application.xml" tofile="${EIDPDataNode}/META-INF/application.xml" overwrite="true"/>
+        <copy filtering="false" file="${dist}/EIDPLib.jar" todir="${EIDPDataNode}/lib" overwrite="true"/>
+        <jar basedir="${EIDPDataNode}" jarfile="${dist}/EIDPDataNode${VERSION}.ear"/>
     </target>
     
     <target name="test">

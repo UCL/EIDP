@@ -12,6 +12,7 @@ notifications:
   - d.guzman@ucl.ac.uk
 after_success: 
 - cp dist/EIDPCoreApp3.ear .
+- cp dist/EIDPDataNode3.ear .
 - cp dist/EIDPCore3.jar .
 - cp dist/EIDPLib.jar .
 - ls
