@@ -51,10 +51,12 @@
         <servlet-name>Login</servlet-name>
         <url-pattern>/servlet/com.eidp.webctrl.Login</url-pattern>
     </servlet-mapping>
+    <!--
     <servlet-mapping>
         <servlet-name>webdav</servlet-name>
         <url-pattern>/webdav/files/*</url-pattern>
     </servlet-mapping>
+    -->
     <session-config>
         <session-timeout>
             30

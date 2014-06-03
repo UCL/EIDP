@@ -10,8 +10,8 @@
     <ejb-ref-name>EIDPWebAppCache</ejb-ref-name>
     <jndi-name>ejb/TwWebAppCache</jndi-name>
   </ejb-ref>
-  <locale-charset-info>
-      <locale-charset-map locale="" charset=""/>
+  <locale-charset-info default-locale="en">
+      <locale-charset-map locale="en_GB" charset="UTF-8"/>
       <parameter-encoding default-charset="UTF-8"/>
   </locale-charset-info>
 </sun-web-app>
