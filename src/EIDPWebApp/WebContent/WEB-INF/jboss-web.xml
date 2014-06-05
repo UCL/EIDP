@@ -10,6 +10,6 @@
     </ejb-ref>
     <ejb-ref>
         <ejb-ref-name>EIDPWebAppCache</ejb-ref-name>
-        <jndi-name>ejb/TwWebAppCache</jndi-name>
+        <jndi-name>ejb/EIDPWebAppCache</jndi-name>
     </ejb-ref>
 </jboss-web>
