@@ -4,7 +4,23 @@
   <enterprise-beans>
     <ejb>
       <ejb-name>ejb/DBMapping</ejb-name>
+      <jndi-name>DBMapping</jndi-name>
+      <ejb-ref>
+        <ejb-ref-name>ejb/DBRemoteMapping</ejb-ref-name>
+        <jndi-name>corbaname:iiop:127.0.0.1:3700#DBMapping</jndi-name>
+      </ejb-ref>
+      <bean-pool>
+        <steady-pool-size>10</steady-pool-size>
+        <resize-quantity>10</resize-quantity>
+        <max-pool-size>512</max-pool-size>
+        <pool-idle-timeout-in-seconds>600</pool-idle-timeout-in-seconds>
+      </bean-pool>
+      <bean-cache>
+        <max-cache-size>512</max-cache-size>
+        <resize-quantity>10</resize-quantity>
+        <removal-timeout-in-seconds>1800</removal-timeout-in-seconds>
+        <victim-selection-policy>LRU</victim-selection-policy>
+      </bean-cache>
     </ejb>
   </enterprise-beans>
-  <disable-nonportable-jndi-names>true</disable-nonportable-jndi-names>
 </glassfish-ejb-jar>
