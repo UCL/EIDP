@@ -138,7 +138,7 @@
         <jar basedir="${EIDPCore}" jarfile="${dist}/EIDPCore${VERSION}.jar"/>
     </target>
     <target depends="EIDPLib_Compile,EIDPServicesBuilder_Compile" name="EIDPCore_Compile">
-        <javac source="1.5" target="1.5" destdir="${EIDPCore}" srcdir="${core}">
+        <javac source="1.5" target="1.5" destdir="${EIDPCore}" srcdir="${core}" debug="true" debuglevel="lines,source">
             <classpath>
                 <path refid="build.classpath"/>
                 <pathelement path="${EIDPServicesBuilder}"/>
@@ -231,7 +231,7 @@
                 <include name="*.jsp"/>
             </fileset>
         </copy>
-        <javac source="1.5" target="1.5" destdir="${EIDPWebApp}/WEB-INF/classes" srcdir="${webapp}/src">
+        <javac source="1.5" target="1.5" destdir="${EIDPWebApp}/WEB-INF/classes" srcdir="${webapp}/src" debug="true" debuglevel="lines,source">
             <classpath>
                 <path refid="build.classpath"/>
                 <pathelement path="${EIDPCore}"/>
