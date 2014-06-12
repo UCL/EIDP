@@ -3,6 +3,6 @@
 <application>
 <display-name>EIDP Application</display-name>
 <module>
-<ejb>EIDPCore3.jar</ejb>
+<ejb>EIDPCore.jar</ejb>
 </module>
 </application>
