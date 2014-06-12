@@ -13,8 +13,6 @@ notifications:
 after_success: 
 - cp dist/EIDPCoreApp3.ear .
 - cp dist/EIDPDataNode3.ear .
-- cp dist/EIDPCore3.jar .
-- cp dist/EIDPLib.jar .
 - ls
 - chmod +x travis/github-release.sh
 - travis/github-release.sh "$TRAVIS_REPO_SLUG" "$(git describe)" EIDP*.?ar
