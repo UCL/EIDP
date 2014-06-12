@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--    Document   : application.xml    Created on : September 24, 2003, 9:03 AM    Author     : veit    Description:        Purpose of the document follows.--><!DOCTYPE application PUBLIC '-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN' 'http://java.sun.com/dtd/application_1_3.dtd'><application>    
+<!--    Document   : application.xml    Created on : September 24, 2003, 9:03 AM    Author     : veit    Description:        Purpose of the document follows.-->
+<!DOCTYPE application PUBLIC '-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN' 'http://java.sun.com/dtd/application_1_3.dtd'>
+<application>    
     <display-name>EIDP Application</display-name>    
     <module>        
-        <ejb>EIDPCore3.jar</ejb>    
+        <ejb>EIDPCore.jar</ejb>    
     </module>    
     <module>        
-        <ejb>EIDPWebAppCache3.jar</ejb>    
+        <ejb>EIDPWebAppCache.jar</ejb>    
     </module>    
     <module>        
         <web>            
-            <web-uri>EIDPWebApp3.war</web-uri>            
+            <web-uri>EIDPWebApp.war</web-uri>            
             <context-root>EIDPWebApp</context-root>        
         </web>    
     </module>    
     <module>        
         <web>            
-            <web-uri>EIDPServices3.war</web-uri>            
+            <web-uri>EIDPServices.war</web-uri>            
             <context-root>EIDPServices</context-root>        
         </web>    
     </module>

@@ -59,17 +59,6 @@
       </fileset>
     </path>
 
-    <!-- OLD LIB 1.4
-    <property location="${libs-basedir}/j2ee.jar" name="j2ee_libs"/>
-    -->
-    <!-- UKPIN
-    <property location="/opt/SUNWappserver-2.1/lib/j2ee.jar" name="j2ee_libs"/>
-    -->
-    <!-- Intranet j2ee.jar lib >
-    <property location="${libs-basedir}/ejb-api-3.0.jar" name="j2ee_libs"/>
-    <property location="${libs-basedir}/soap-2.3.jar" name="soap_libs"/>
-    -->
-
     <target name="init">
         <tstamp/>
         <delete dir="build"/>
@@ -135,7 +124,7 @@
     
     <!-- EIDPCore -->
     <target depends="EIDPCore_Compile,EIDPLib_Dist,EIDPServicesBuilder_Dist" name="EIDPCore_Dist">
-        <jar basedir="${EIDPCore}" jarfile="${dist}/EIDPCore${VERSION}.jar"/>
+        <jar basedir="${EIDPCore}" jarfile="${dist}/EIDPCore.jar"/>
     </target>
     <target depends="EIDPLib_Compile,EIDPServicesBuilder_Compile" name="EIDPCore_Compile">
         <javac source="1.5" target="1.5" destdir="${EIDPCore}" srcdir="${core}" debug="true" debuglevel="lines,source">
@@ -154,7 +143,7 @@
     
     <!-- EIDPWebAppCache -->
     <target depends="EIDPWebAppCache_Compile,EIDPCore_Dist" name="EIDPWebAppCache_Dist">
-        <jar basedir="${EIDPWebAppCache}" jarfile="${dist}/EIDPWebAppCache${VERSION}.jar"/>
+        <jar basedir="${EIDPWebAppCache}" jarfile="${dist}/EIDPWebAppCache.jar"/>
     </target>
     <target depends="EIDPCore_Compile" name="EIDPWebAppCache_Compile">
         <javac source="1.5" target="1.5" destdir="${EIDPWebAppCache}" srcdir="${webappcache}">
@@ -172,7 +161,7 @@
     
     <!-- EIDPWebApp -->
     <target depends="EIDPWebApp_Compile,EIDPWebAppCache_Dist,EIDPCore_Dist" name="EIDPWebApp_Dist">
-        <jar basedir="${EIDPWebApp}" jarfile="${dist}/EIDPWebApp${VERSION}.war"/>
+        <jar basedir="${EIDPWebApp}" jarfile="${dist}/EIDPWebApp.war"/>
     </target>
     <target depends="EIDPWebAppCache_Compile,EIDPCore_Compile" name="EIDPWebApp_Compile">
         <copy filtering="false" todir="${EIDPWebApp}/images" overwrite="true">
@@ -192,13 +181,6 @@
                 <include name="*.html"/>
             </fileset>
         </copy>
-        <!--
-         <copy filtering="false" todir="${EIDPWebApp}/files" overwrite="true">
-            <fileset dir="${webapp}/WebContent/files">
-                <include name="*.*"/>
-            </fileset>
-        </copy>
-        -->
         <copy filtering="false" todir="${EIDPWebApp}/stylesheets" overwrite="true">
             <fileset dir="${webapp}/WebContent/stylesheets">
                 <include name="*.css"/>
@@ -209,22 +191,6 @@
                 <include name="*.xml"/>
             </fileset>
         </copy>
-        <!--
-        <copy filtering="false" todir="${EIDPWebApp}/WEB-INF/lib" overwrite="true">
-            <fileset dir="${webapp}/WebContent/WEB-INF/lib">
-                <include name="*.jar"/>
-            </fileset>
-            <fileset dir="projects/EIDPMod_Search/dist">
-                <include name="EIDPMod_Search.jar"/>
-            </fileset>
-            <fileset dir="projects/EIDPMod_FileManager/dist">
-                <include name="EIDPMod_FileManager.jar"/>
-            </fileset>
-            <fileset dir="${libs-basedir}/modlib">
-                <include name="*.jar"/>
-            </fileset>
-        </copy>
-        -->
         <copy filtering="false" todir="${EIDPWebApp}" overwrite="true">
             <fileset dir="${webapp}/WebContent">
                 <include name="*.html"/>
@@ -239,11 +205,6 @@
                 <fileset dir="${EIDPWebApp}/WEB-INF/lib">
                     <include name="*.jar"/>
                 </fileset>
-                <!--
-                <fileset dir="${libs-basedir}/ext">
-                    <include name="*.jar" />
-                </fileset>
-                -->
                 <pathelement path="${EIDPLib}"/>
             </classpath>
         </javac>
@@ -251,7 +212,7 @@
 
     <!-- EIDPServices -->
     <target depends="EIDPServices_Compile" name="EIDPServices_Dist">
-        <jar basedir="${EIDPServices}" jarfile="${dist}/EIDPServices${VERSION}.war"/>
+        <jar basedir="${EIDPServices}" jarfile="${dist}/EIDPServices.war"/>
     </target>
     <target depends="EIDPCore_Compile" name="EIDPServices_Compile">
         <copy filtering="false" todir="${EIDPServices}/WEB-INF" overwrite="true">
@@ -259,13 +220,6 @@
                 <include name="*.xml"/>
             </fileset>
         </copy>
-        <!--
-        <copy filtering="false" todir="${EIDPServices}/WEB-INF/lib" overwrite="true">
-            <fileset dir="${services}/WebContent/WEB-INF/lib">
-                <include name="*.jar"/>
-            </fileset>
-        </copy>
-        -->
         <javac source="1.5" target="1.5" destdir="${EIDPServices}/WEB-INF/classes" srcdir="${services}/src">
             <classpath>
                 <pathelement path="${EIDPCore}"/>
@@ -282,25 +236,18 @@
     <target depends="EIDPServices_Dist,EIDPWebApp_Dist" name="EIDPCoreApp_Dist">
         <copy filtering="false" todir="${EIDPCoreApp}" overwrite="true">
             <fileset dir="${dist}">
-                <include name="EIDPCore${VERSION}.jar"/>
-                <include name="EIDPWebAppCache${VERSION}.jar"/>
-                <include name="EIDPWebApp${VERSION}.war"/>
-                <include name="EIDPServices${VERSION}.war"/>
+                <include name="EIDPCore.jar"/>
+                <include name="EIDPWebAppCache.jar"/>
+                <include name="EIDPWebApp.war"/>
+                <include name="EIDPServices.war"/>
             </fileset>
         </copy>
         <copy filtering="false" file="${coreapp}/META-INF/coreapp-application.xml" tofile="${EIDPDataNode}/META-INF/application.xml" overwrite="true"/>
-        <!--
-        <copy filtering="false" todir="${EIDPCoreApp}/META-INF" overwrite="true">
-            <fileset dir="${coreapp}/META-INF">
-                <include name="*.xml"/>
-            </fileset>
-        </copy>
-        -->
         <copy filtering="false" file="${dist}/EIDPLib.jar" todir="${EIDPCoreApp}/lib" overwrite="true"/>
         <copy filtering="false" file="${libdir}/soap-2.3.jar" todir="${EIDPCoreApp}/lib" overwrite="true"/>
         <jar basedir="${EIDPCoreApp}" jarfile="${dist}/EIDPCoreApp${VERSION}.ear"/>
         
-        <copy filtering="false" file="${dist}/EIDPCore${VERSION}.jar" todir="${EIDPDataNode}" overwrite="true"/>
+        <copy filtering="false" file="${dist}/EIDPCore.jar" todir="${EIDPDataNode}" overwrite="true"/>
         <copy filtering="false" file="${coreapp}/META-INF/datanode-application.xml" tofile="${EIDPDataNode}/META-INF/application.xml" overwrite="true"/>
         <copy filtering="false" file="${dist}/EIDPLib.jar" todir="${EIDPDataNode}/lib" overwrite="true"/>
         <jar basedir="${EIDPDataNode}" jarfile="${dist}/EIDPDataNode${VERSION}.ear"/>
