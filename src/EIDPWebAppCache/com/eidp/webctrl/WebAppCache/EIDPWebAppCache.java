@@ -15,6 +15,7 @@ import java.util.Vector;
 import java.util.Set ;
 
 import java.io.InputStream ;
+import javax.ejb.Stateful;
 
 import org.w3c.dom.NodeList;
 
@@ -43,6 +44,7 @@ import javax.servlet.http.HttpSessionEvent ;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  */
 
+@Stateful
 public class EIDPWebAppCache implements javax.ejb.SessionBean , HttpSessionListener {
     
     private javax.ejb.SessionContext context;
