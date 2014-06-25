@@ -1,26 +1,15 @@
 
 package com.eidp.webctrl.WebAppCache;
 
-import com.eidp.xml.XMLDataAccess;
-import com.eidp.logger.Logger ;
-
-import javax.ejb.SessionBean;
-import javax.ejb.SessionContext;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.rmi.PortableRemoteObject;
-
+import com.eidp.logger.Logger;
+import java.io.IOException ;
 import java.util.HashMap;
 import java.util.Vector;
-import java.util.Set ;
-
-import java.io.InputStream ;
+import javax.ejb.EJBException;
+import javax.ejb.PrePassivate;
 import javax.ejb.Stateful;
-
-import org.w3c.dom.NodeList;
-
-import javax.servlet.http.HttpSessionListener ;
-import javax.servlet.http.HttpSessionEvent ;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 /**
  * EIDPWebAppCache.
@@ -45,41 +34,17 @@ import javax.servlet.http.HttpSessionEvent ;
  */
 
 @Stateful
-public class EIDPWebAppCache implements javax.ejb.SessionBean , HttpSessionListener {
+public class EIDPWebAppCache implements HttpSessionListener {
     
     private javax.ejb.SessionContext context;
-    //    private XMLDataAccess xmlDataAccess ;
-    private Logger logger ;
+    private transient Logger logger;
     private int logLevel = 9 ;
-    
     private HashMap sessionData = new HashMap() ;
-    
     private Vector userRoles = new Vector() ;
     private HashMap centerRoles = new HashMap() ;
-    
     private HashMap sessionRefs = new HashMap() ;
-    
     private String sidePanelEntry = "" ;
-    
     private String applicationContext = "" ;
-    
-    /**
-     * See section 7.10.3 of the EJB 2.0 specification
-     * @param applicationname
-     * @throws CreateException
-     * @throws RemoteException
-     * @throws IOException
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     */
-    public void ejbCreate( String applicationname ) throws javax.ejb.CreateException, java.rmi.RemoteException , java.io.IOException , org.xml.sax.SAXException , javax.xml.parsers.ParserConfigurationException {
-        this.applicationContext = applicationname ;
-        this.logger = new Logger( "/com/eidp/" + applicationname + "/WebAppCache.log" ) ;
-        this.logger.logMessage( "Initializing WebAppCacheLog with Context: " + applicationname + "." ) ;
-        //        String xmlfile = "/org/eidp/" + applicationname + "/resources/webctrl/controller.xml" ;
-        //        this.xmlDataAccess = new XMLDataAccess( xmlfile ) ;
-        //        this.logger.logMessage( "xmlfile read, Bean successfully created." ) ;
-    }
     
     /**
      *
@@ -320,34 +285,6 @@ public class EIDPWebAppCache implements javax.ejb.SessionBean , HttpSessionListe
         } else return true ;
     }
     
-    //
-    //    public Vector ctrlGetElementsByName( String requestString , NodeList requestList ) throws java.rmi.RemoteException , org.xml.sax.SAXException , java.io.IOException {
-    //        this.logger.logMessage( "ctrlGetElementsByName( String , NodeList )" ) ;
-    //        Vector resultVector = new Vector() ;
-    //        this.logger.logMessage( ">>> processing xml..." ) ;
-    //        resultVector = this.xmlDataAccess.getElementsByName( requestString , requestList ) ;
-    //        this.logger.logMessage( ">>> xml successessfully processed, returning Vector." ) ;
-    //        return resultVector ;
-    //    }
-    //
-    //    public Vector ctrlGetNodeListsByName( String requestString , NodeList requestList ) throws java.rmi.RemoteException , org.xml.sax.SAXException , java.io.IOException {
-    //        this.logger.logMessage( "ctrlGetNodeListsByName( String , NodeList )" ) ;
-    //        Vector resultVector = new Vector() ;
-    //        this.logger.logMessage( ">>> processing xml..." ) ;
-    //        resultVector = this.xmlDataAccess.getNodeListsByName( requestString , requestList ) ;
-    //        this.logger.logMessage( ">>> xml successessfully processed, returning Vector." ) ;
-    //        return resultVector ;
-    //    }
-    //
-    //    public void ctrlChangeContext( String applicationname ) throws java.rmi.RemoteException , java.io.IOException , org.xml.sax.SAXException , javax.xml.parsers.ParserConfigurationException {
-    //        String xmlfile = "/org/eidp/" + applicationname + "/resources/webctrl/controller.xml" ;
-    //        this.xmlDataAccess = new XMLDataAccess( xmlfile ) ;
-    //    }
-    
-    // === Other application specific data structures
-    
-    
-    
     /**
      * @see javax.ejb.SessionBean#setSessionContext(javax.ejb.SessionContext)
      */
@@ -361,23 +298,10 @@ public class EIDPWebAppCache implements javax.ejb.SessionBean , HttpSessionListe
      */
     public void ejbActivate() {
         try {
-            this.logger = new Logger( "/com/eidp/" + this.applicationContext + "/WebAppCache.log" ) ;
+            this.logger = new Logger( "/com/eidp/" + this.getApplicationContext() + "/WebAppCache.log" ) ;
         } catch ( java.io.IOException ioe ) {
         }
     }
-    
-    
-    /**
-     * @see javax.ejb.SessionBean#ejbPassivate()
-     */
-    public void ejbPassivate() {
-        try {
-            this.logger.close() ;
-        } catch ( java.io.IOException ioe ) {
-        }
-        this.logger = null ;
-    }
-    
     
     /**
      * @see javax.ejb.SessionBean#ejbRemove()
@@ -399,5 +323,30 @@ public class EIDPWebAppCache implements javax.ejb.SessionBean , HttpSessionListe
     public void sessionDestroyed( HttpSessionEvent httpSessionEvent ) {
         this.ejbRemove() ;
     }
+
+    /**
+     * @return the applicationContext
+     */
+    public String getApplicationContext() {
+        return applicationContext;
+    }
+
+    /**
+     * @param applicationContext the applicationContext to set
+     */
+    public void setApplicationContext(String applicationContext) throws IOException {
+        this.applicationContext = applicationContext;
+        this.logger = new Logger( "/com/eidp/" + applicationContext + "/WebAppCache.log" ) ;
+        this.logger.logMessage( "Initializing WebAppCacheLog with Context: " + applicationContext + "." ) ;
+    }
     
+    @PrePassivate
+    public void prePassivate() {
+        try {
+            this.logger.close();
+        } catch (IOException ex) {
+            throw new EJBException("[EIDPWebAppCache] : @PrePassivate error; cannot close logger");
+        }
+        this.logger = null;
+    }
 }
