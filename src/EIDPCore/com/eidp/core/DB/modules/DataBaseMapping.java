@@ -278,8 +278,17 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
                     forOperator = " is null" ;
                     forKey = "not " + forKey;
                 }else if ( forOperator.equals("raw") ) {
-                    String rawOperator = (String)((Vector)this.xmlDataAccess.getElementsByName( "for.raw" , (NodeList)forVector.get( f_i ) ) ).get( 0 ) ;
+                    String rawOperator = (String)((Vector)this.xmlDataAccess.getElementsByName( "for,raw" , (NodeList)forVector.get( f_i ) ) ).get( 0 ) ;
                     forOperator = " " + rawOperator + " ";
+                    Vector searchCaseSen = (Vector)this.xmlDataAccess.getElementsByName( "for,case" , methodNode ) ;
+                    if( searchCaseSen.size() > 0 ){
+                            String strCaseSensitivity = (String)searchCaseSen.get( 0 ) ;;
+                            if(strCaseSensitivity.equals("upper")){
+                                origForValue = origForValue.toUpperCase() ;
+                            }else if(strCaseSensitivity.equals("lower")){
+                                origForValue = origForValue.toLowerCase() ;
+                            }
+                        }
                 }
                 if ( isLike == false ) {
                     forValue = origForValue ;
