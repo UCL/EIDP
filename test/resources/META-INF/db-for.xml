@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<for>
+    <type>and</type>
+    <field>login</field>
+    <operator>raw</operator>
+    <raw>similar to</raw>
+</for>

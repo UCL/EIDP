@@ -95,6 +95,16 @@
         <ivy:settings file="ivy-settings.xml" />
         <ivy:resolve />
 	<ivy:retrieve />
+	<ivy:cachepath pathid="test.classpath" conf="test" />
+    </target>
+    <target name="init-testng" depends="resolve" description="--> configure testng Ant task">
+      <taskdef resource="testngtasks" classpathref="test.classpath"/>
+      <delete quiet="true">
+	<fileset dir="test/classes" includes="**/*"/>
+      </delete>
+      <mkdir dir="test/classes"/>
+      <mkdir dir="test/report"/>
+      <mkdir dir="test/resources"/>
     </target>
 
     <!-- ============ -->
@@ -233,7 +243,7 @@
     </target>
 
     <!-- EIDPCoreApp -->
-    <target depends="EIDPServices_Dist,EIDPWebApp_Dist" name="EIDPCoreApp_Dist">
+    <target depends="EIDPServices_Dist,EIDPWebApp_Dist" name="EIDPCoreApp_Dist" description="--> build EIDP ear application">
         <copy filtering="false" todir="${EIDPCoreApp}" overwrite="true">
             <fileset dir="${dist}">
                 <include name="EIDPCore.jar"/>
@@ -253,8 +263,19 @@
         <jar basedir="${EIDPDataNode}" jarfile="${dist}/EIDPDataNode${VERSION}.ear"/>
     </target>
     
-    <target name="test">
+    <target depends="init-testng" name="test-compile">
+      <javac destdir="test/classes" srcdir="test/EIDPCore" classpathref="test.classpath"/>
+    </target>
+
+    <target depends="test-compile" name="test" description="--> run TestNG tests">
     	<echo>Apache Ant test task required by Travis CI</echo>
+	<testng classpathref="test.classpath" outputDir="test/report">
+	  <classfileset dir="test/classes" includes="**/*.class"/>
+	  <classpath>
+	    <pathelement location="test/classes"/>
+	    <pathelement location="test/resources/META-INF"/>
+	  </classpath>
+	</testng>
     </target>
     
 </project>
