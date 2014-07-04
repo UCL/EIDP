@@ -1,4 +1,3 @@
-
 package com.eidp.webctrl.WebAppCache;
 
 import com.eidp.logger.Logger;
@@ -7,6 +6,7 @@ import java.util.HashMap;
 import java.util.Vector;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJBException;
+import javax.ejb.LocalBean;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Stateful;
@@ -36,12 +36,13 @@ import javax.servlet.http.HttpSessionListener;
  */
 
 @Stateful
+@LocalBean
 public class EIDPWebAppCache implements HttpSessionListener {
     
     private javax.ejb.SessionContext context;
     private transient Logger logger;
     private HashMap sessionData = new HashMap() ;
-    private Vector userRoles = new Vector() ;
+    private final Vector userRoles = new Vector() ;
     private HashMap centerRoles = new HashMap() ;
     private final HashMap sessionRefs = new HashMap() ;
     private String sidePanelEntry = "" ;
@@ -97,9 +98,7 @@ public class EIDPWebAppCache implements HttpSessionListener {
     }
     
     public boolean sessionData_exists() {
-        if ( this.sessionData.isEmpty() || this.sessionData != null ) {
-            return false ;
-        } else return true ;
+        return !this.sessionData.isEmpty() && this.sessionData == null;
     }
     
     public void sessionData_clear() {
@@ -119,9 +118,7 @@ public class EIDPWebAppCache implements HttpSessionListener {
     }
     
     public boolean userRoles_exists() {
-        if ( this.userRoles.size() > 0 ) {
-            return true ;
-        } else return false ;
+        return this.userRoles.size() > 0;
     }
 
     public boolean userRoles_contains( Object object ) {
@@ -153,9 +150,7 @@ public class EIDPWebAppCache implements HttpSessionListener {
     }
 
     public boolean centerRoles_exists() {
-        if ( this.centerRoles.isEmpty() || this.centerRoles != null ) {
-            return false ;
-        } else return true ;
+        return !this.centerRoles.isEmpty() && this.centerRoles == null;
     }
 
     public void centerRoles_clear() {
@@ -175,12 +170,11 @@ public class EIDPWebAppCache implements HttpSessionListener {
     }
 
     public boolean sidePanelEntry_exists() {
-        if ( this.sidePanelEntry.equals( "" ) || this.sidePanelEntry == null ) {
-            return false ;
-        } else return true ;
+        return !this.sidePanelEntry.equals( "" ) && this.sidePanelEntry != null;
     }
     
     /**
+     * @param aContext
      * @see javax.ejb.SessionBean#setSessionContext(javax.ejb.SessionContext)
      */
     public void setSessionContext(javax.ejb.SessionContext aContext) {
