@@ -192,6 +192,9 @@ public class EIDPWebAppCache implements HttpSessionListener {
     
     @PreDestroy
     public void remove() {
+        sessionData_clear();
+        sessionRef_clear();
+        userRoles_clear();
     }
     
     @Override
