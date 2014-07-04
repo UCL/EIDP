@@ -1,15 +1,11 @@
 package com.eidp.webctrl.WebAppCache;
 
-import com.eidp.logger.Logger;
-import java.io.IOException ;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.annotation.PreDestroy;
-import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
-import javax.ejb.PostActivate;
-import javax.ejb.PrePassivate;
 import javax.ejb.Stateful;
+import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
@@ -37,10 +33,10 @@ import javax.servlet.http.HttpSessionListener;
 
 @Stateful
 @LocalBean
+@Interceptors(EIDPWebAppCacheLogger.class)
 public class EIDPWebAppCache implements HttpSessionListener {
     
     private javax.ejb.SessionContext context;
-    private transient Logger logger;
     private HashMap sessionData = new HashMap() ;
     private final Vector userRoles = new Vector() ;
     private HashMap centerRoles = new HashMap() ;
@@ -53,12 +49,6 @@ public class EIDPWebAppCache implements HttpSessionListener {
     
     public EIDPWebAppCache(String applicationname) {
         this.applicationContext = applicationname ;
-        try {
-            this.logger = new Logger( "/com/eidp/" + applicationname + "/WebAppCache.log" ) ;
-            this.logger.logMessage( "Initializing WebAppCacheLog with Context: " + applicationname + "." ) ;
-        } catch (IOException e) {
-            throw new EJBException("[EIDPWebAppCache] : Cannot create instance of EIDPWebAppCache");
-        }
     }
     
     public void sessionRef_set( String sessionKey , Object object ) {
@@ -181,15 +171,6 @@ public class EIDPWebAppCache implements HttpSessionListener {
         context=aContext;
     }
     
-    @PostActivate
-    public void activate() {
-        try {
-            this.logger = new Logger( "/com/eidp/" + this.getApplicationContext() + "/WebAppCache.log" ) ;
-        } catch ( java.io.IOException e ) {
-            throw new EJBException("[EIDPWebAppCache] : Cannot set applicationContext");
-        }
-    }
-    
     @PreDestroy
     public void remove() {
         sessionData_clear();
@@ -212,21 +193,6 @@ public class EIDPWebAppCache implements HttpSessionListener {
 
     public void setApplicationContext(String applicationContext) {
         this.applicationContext = applicationContext;
-        try {
-            this.logger = new Logger( "/com/eidp/" + applicationContext + "/WebAppCache.log" ) ;
-            this.logger.logMessage( "Initializing WebAppCacheLog with Context: " + applicationContext + "." ) ;
-        } catch (IOException e) {
-            throw new EJBException("[EIDPWebAppCache] : Cannot set applicationContext");
-        }
     }
     
-    @PrePassivate
-    public void prePassivate() {
-        try {
-            this.logger.close();
-        } catch (IOException ex) {
-            this.logger = null;
-        }
-        this.logger = null;
-    }
 }
