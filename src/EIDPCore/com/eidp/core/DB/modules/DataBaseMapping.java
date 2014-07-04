@@ -284,7 +284,7 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
                     if( searchType.size() > 0 ){
                         String strEasySearch = (String)searchType.get( 0 );
                         if(strEasySearch.equals("true")){
-                            forValue = "%" + forValue + "%" ;
+                            origForValue = "%" + origForValue + "%" ;
                         }
                     }
                     if( searchCaseSen.size() > 0 ){
