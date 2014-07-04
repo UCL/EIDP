@@ -279,7 +279,14 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
                     forKey = "not " + forKey;
                 }else if ( forOperator.equals("similarto") ) {
                     forOperator = " similar to ";
+                    Vector searchType = (Vector)this.xmlDataAccess.getElementsByName( "for,easysearch" , methodNode ) ;
                     Vector searchCaseSen = (Vector)this.xmlDataAccess.getElementsByName( "for,case" , methodNode ) ;
+                    if( searchType.size() > 0 ){
+                        String strEasySearch = (String)searchType.get( 0 );
+                        if(strEasySearch.equals("true")){
+                            forValue = "%" + forValue + "%" ;
+                        }
+                    }
                     if( searchCaseSen.size() > 0 ){
                             String strCaseSensitivity = (String)searchCaseSen.get( 0 ) ;;
                             if(strCaseSensitivity.equals("upper")){
