@@ -14,9 +14,9 @@ package com.eidp.webctrl;
 
 import com.eidp.core.DB.DBMappingHomeRemote;
 import com.eidp.core.DB.DBMappingRemote;
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCacheHomeRemote ;
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote ;
+import com.eidp.webctrl.WebAppCache.EIDPWebAppCache;
 import com.eidp.logger.Logger;
+import java.rmi.RemoteException;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -41,6 +41,8 @@ import javax.servlet.http.HttpServletRequest;
 import sun.misc.BASE64Encoder;
 import javax.ejb.Handle ;
 import java.util.Set ;
+import java.util.logging.Level;
+import javax.ejb.RemoveException;
 
 /**
  * Authentication Filter for Single-Sign-On functionality.
@@ -154,17 +156,14 @@ public class AuthFilter implements Filter {
 //                cacheProp.setProperty( "org.omg.CORBA.ORBInitialHost" , "localhost" ) ;
 //                cacheProp.setProperty( "org.omg.CORBA.ORBInitialPort" , "33365" ) ;
                 Context cacheJndiContext = new InitialContext( cacheProp );
-                Object cacheRef = cacheJndiContext.lookup("EIDPWebAppCache");
-                EIDPWebAppCacheHomeRemote cacheHome = (EIDPWebAppCacheHomeRemote) PortableRemoteObject.narrow(cacheRef, EIDPWebAppCacheHomeRemote.class);
-                uso.eidpWebAppCache = cacheHome.create( uso.applicationContext ) ;
+                EIDPWebAppCache cacheRef = (EIDPWebAppCache) cacheJndiContext.lookup("EIDPWebAppCache");
+                cacheRef.setApplicationContext(uso.applicationContext);
             } catch ( javax.naming.NamingException ne ) {
                 throw new javax.servlet.ServletException( "AuthFilter throws NamingException when calling EIDPWebAppCache: " + ne ) ;
-            } catch ( javax.ejb.CreateException ejbce ) {
-                throw new javax.servlet.ServletException( "AuthFilter throws EJB.CreateException when calling EIDPWebAppCache: " + ejbce ) ;
-            }
-            session.setAttribute( "eidpWebAppCacheHandle" , uso.eidpWebAppCache.getHandle() ) ;
+            }  
+            session.setAttribute( "eidpWebAppCacheHandle" , uso.eidpWebAppCache ) ;
         } else {
-            uso.eidpWebAppCache = (EIDPWebAppCacheRemote)((Handle)session.getAttribute( "eidpWebAppCacheHandle" )).getEJBObject() ;
+            uso.eidpWebAppCache = (EIDPWebAppCache) session.getAttribute( "eidpWebAppCacheHandle" ) ;
             
             // SESSION EXISTS!
             this.logger.logMessage( "Existing Session was available." ) ;
@@ -428,19 +427,12 @@ public class AuthFilter implements Filter {
                 session.setAttribute( "dbMapperHandle" , dbMapper.getHandle() ) ;
             } else {
                 uso.checkAuth = false ;
-                try {
                     dbMapper.remove() ;
-                } catch ( javax.ejb.RemoveException e ) {
-                    System.out.println( "AuthFilter: Could not remove EJB: " + e ) ;
-                }
+                
             }
             return uso ;
-        } catch ( javax.ejb.CreateException ce ) {
-            throw new javax.servlet.ServletException( "CreateException by AuthFilter: " + ce ) ;
         } catch ( javax.naming.NamingException ne ) {
             throw new javax.servlet.ServletException( "Naming Exception by AuthFilter: " + ne ) ;
-        } catch ( java.sql.SQLException sqle ) {
-            throw new javax.servlet.ServletException( "SQL Exception by AuthFilter (db.xml): " + sqle ) ;
         } catch ( java.rmi.RemoteException re ) {
             throw new javax.servlet.ServletException( "RemoteException by AuthFilter: " + re ) ;
         } catch ( java.io.IOException ioe ) {
@@ -457,13 +449,6 @@ public class AuthFilter implements Filter {
     }
     
     private void sessionInvalidate( HttpSession session , UserScopeObject uso ) throws javax.servlet.ServletException , java.io.IOException {
-        try {
-            ((DBMappingRemote)((Handle)session.getAttribute( "dbMapperHandle" )).getEJBObject()).remove() ;
-        } catch ( javax.ejb.RemoveException rme ) {
-        } catch ( java.lang.NullPointerException nulle ) {
-        } catch ( java.rmi.NoSuchObjectException noo ) {
-        }
-        session.removeAttribute( "dbMapperHandle" ) ;
         // since all session data is stored in eidpWebAppCache,
         // it is not necessary to kill the session at all if the
         // dbMapper Object is removed.
@@ -487,19 +472,15 @@ public class AuthFilter implements Filter {
         } catch ( javax.ejb.RemoveException rme ) {
         } catch ( java.lang.NullPointerException nulle ) {
         } catch ( java.rmi.NoSuchObjectException nsoe ) {
-        }
-        try {
-            ((EIDPWebAppCacheRemote)((Handle)session.getAttribute( "eidpWebAppCacheHandle" )).getEJBObject()).remove() ;
-        } catch ( javax.ejb.RemoveException rme ) {
+        } catch (RemoteException ex) {
+        } 
+        ((EIDPWebAppCache) session.getAttribute("eidpWebAppCacheHandle")).remove();
+        try {    
+            session.removeAttribute("eidpWebAppCacheHandle");
         } catch ( java.lang.NullPointerException nulle ) {
-        } catch ( java.rmi.NoSuchObjectException nsoe ) {
         }
         try {
             session.removeAttribute( "dbMapperHandle" ) ;
-        } catch ( java.lang.NullPointerException nulle ) {
-        }
-        try {
-            session.removeAttribute( "eidpWebAppCacheHandle" ) ;
         } catch ( java.lang.NullPointerException nulle ) {
         }
     }
@@ -533,7 +514,7 @@ public class AuthFilter implements Filter {
         public ServletContext context;
         public String applicationContext ;
         public DBMappingRemote dbMapper ;
-        public EIDPWebAppCacheRemote eidpWebAppCache ;
+        public EIDPWebAppCache eidpWebAppCache ;
         public boolean checkAuth = false ;
         
         public boolean initializeApplication = false ;

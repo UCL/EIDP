@@ -6,20 +6,11 @@
 
 package com.eidp.webctrl.modules;
 
-import com.eidp.core.DB.DBMappingHomeRemote;
-import com.eidp.core.DB.DBMappingRemote;
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote ;
 
 import java.io.PrintWriter;
 
 import com.eidp.UserScopeObject.UserScopeObject ;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ejb.Handle ;
 
 import java.util.HashMap ;
 import java.util.Vector ;
@@ -134,7 +125,7 @@ public class EIDPGenerator {
     public EIDPGenerator( String moduleLabel , PrintWriter printWriter , UserScopeObject uso ) {
         printWriter.println( "</head>" ) ;
         printWriter.println( "<body>" ) ;
-        try{
+
             String strHelpAni = (String)uso.eidpWebAppCache.sessionData_get( "AnimatedHelp" ) ;
             if(strHelpAni != null && strHelpAni.toLowerCase().equals("yes")){
                 printWriter.println( "<div name=\"warnarzt\" id=\"warnarzt\" style=\"cursor: pointer; position: absolute; top: 100px; left: 0px; width: 0px; height: 0px; background-color: transparent; visibility: hidden;\">" ) ;
@@ -143,9 +134,7 @@ public class EIDPGenerator {
                 printWriter.println( "<iframe style=\"border: solid; background-color: '#FF8000'; font: 10px Arial, Helvetica, sans-serif;\" id=\"warnarztinfoarea\" height=\"100\" width=\"250\"></iframe> </div>" ) ;
                 printWriter.println( "</div>");
             }
-        }catch(java.rmi.RemoteException e){
-            System.out.println("RemoteException thrown in TwGenerator (AnimatedHelp)");
-        }
+
         String applicationLogo = new String();
         try {
             if (!uso.xmlApplication.getElementsByName("application-data,app-logo").isEmpty()) {

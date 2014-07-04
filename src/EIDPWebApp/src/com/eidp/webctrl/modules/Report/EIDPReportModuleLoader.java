@@ -6,19 +6,9 @@
 
 package com.eidp.webctrl.modules.Report;
 
-import com.eidp.xml.XMLDataAccess;
-import com.eidp.core.DB.DBMappingHomeRemote;
-import com.eidp.core.DB.DBMappingRemote;
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote ;
 
 import com.eidp.UserScopeObject.UserScopeObject ;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ejb.Handle ;
 import org.w3c.dom.NodeList ;
 /**
  *

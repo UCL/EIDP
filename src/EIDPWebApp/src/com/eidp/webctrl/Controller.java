@@ -8,8 +8,6 @@ package com.eidp.webctrl;
 
 import com.eidp.core.DB.DBMappingHomeRemote;
 import com.eidp.core.DB.DBMappingRemote;
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote ;
-
 import com.eidp.UserScopeObject.UserScopeObject ;
 import com.eidp.webctrl.modules.EIDPModuleLoader ;
 import com.eidp.webctrl.modules.EIDPAddInLoader;
@@ -17,6 +15,7 @@ import java.io.PrintWriter;
 
 import com.eidp.xml.XMLDataAccess;
 import com.eidp.logger.Logger;
+import com.eidp.webctrl.WebAppCache.EIDPWebAppCache;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServlet;
@@ -2672,7 +2671,7 @@ public class Controller extends HttpServlet {
     
     private void setUserScopeObjectBeans( UserScopeObject uso ) throws java.rmi.RemoteException {
         uso.dbMapper = (DBMappingRemote)((Handle)uso.session.getAttribute( "dbMapperHandle" )).getEJBObject() ;
-        uso.eidpWebAppCache = (EIDPWebAppCacheRemote)((Handle)uso.session.getAttribute( "eidpWebAppCacheHandle" )).getEJBObject() ;
+        uso.eidpWebAppCache = (EIDPWebAppCache) uso.session.getAttribute( "eidpWebAppCacheHandle" ) ;
         uso.applicationContext = (String)uso.eidpWebAppCache.sessionData_get( "applicationContext" ) ;
         uso.userLogin = (String)uso.eidpWebAppCache.sessionData_get( "userLogin" ) ;
         uso.userID = (String)uso.eidpWebAppCache.sessionData_get( "userID" ) ;

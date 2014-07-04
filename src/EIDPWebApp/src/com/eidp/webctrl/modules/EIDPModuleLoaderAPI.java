@@ -6,24 +6,18 @@
 
 package com.eidp.webctrl.modules;
 
-import com.eidp.core.DB.DBMappingHomeRemote;
 import com.eidp.core.DB.DBMappingRemote;
 
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote ;
 
 import java.io.PrintWriter;
 
 import com.eidp.UserScopeObject.UserScopeObject ;
+import com.eidp.webctrl.WebAppCache.EIDPWebAppCache;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ejb.Handle ;
 
-import java.util.HashMap ;
-import java.util.Vector ;
 
 /**
  * Controller is the main entry-point for EIDPWebApp. From
@@ -60,7 +54,7 @@ public abstract class EIDPModuleLoaderAPI {
         // User-specific functionality is in EIDPScripts and from <body> to </body>
         // <body> and </body> have both to be managed by the user class
         uso.dbMapper = (DBMappingRemote)((Handle)uso.session.getAttribute( "dbMapperHandle" )).getEJBObject() ;
-        uso.eidpWebAppCache = (EIDPWebAppCacheRemote)((Handle)uso.session.getAttribute( "eidpWebAppCacheHandle" )).getEJBObject() ;
+        uso.eidpWebAppCache = (EIDPWebAppCache)uso.session.getAttribute( "eidpWebAppCacheHandle" );
         PrintWriter printWriter = this.initHTML( request , response , loadAddOnClass ) ;
         EIDPLoadClass( loadAddOnClass , printWriter , request , response , uso ) ;
         // closeHTML only closes <html>

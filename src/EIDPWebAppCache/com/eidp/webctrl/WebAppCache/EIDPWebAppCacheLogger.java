@@ -7,9 +7,7 @@
 package com.eidp.webctrl.WebAppCache;
 
 import com.eidp.logger.Logger;
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
@@ -23,8 +21,7 @@ public class EIDPWebAppCacheLogger {
     private static Logger logger;
     private String ctx = "";
     
-    @PostConstruct
-    @PostActivate
+    @AroundInvoke
     public Object createLogger(InvocationContext invocationContext) throws Exception {
         Object[] parameters = invocationContext.getParameters();
         if (parameters.length == 1) {

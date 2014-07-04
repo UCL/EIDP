@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Vector;
 import javax.annotation.PreDestroy;
 import javax.ejb.LocalBean;
+import javax.ejb.PrePassivate;
 import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpSessionEvent;
@@ -33,7 +34,6 @@ import javax.servlet.http.HttpSessionListener;
 
 @Stateful
 @LocalBean
-@Interceptors(EIDPWebAppCacheLogger.class)
 public class EIDPWebAppCache implements HttpSessionListener {
     
     private javax.ejb.SessionContext context;
@@ -43,13 +43,6 @@ public class EIDPWebAppCache implements HttpSessionListener {
     private final HashMap sessionRefs = new HashMap() ;
     private String sidePanelEntry = "" ;
     private String applicationContext = "" ;
-
-    public EIDPWebAppCache() {
-    }
-    
-    public EIDPWebAppCache(String applicationname) {
-        this.applicationContext = applicationname ;
-    }
     
     public void sessionRef_set( String sessionKey , Object object ) {
         this.sessionRefs.put( sessionKey , object ) ;
@@ -171,7 +164,18 @@ public class EIDPWebAppCache implements HttpSessionListener {
         context=aContext;
     }
     
+    @Interceptors(EIDPWebAppCacheLogger.class)
+    public void setApplicationContext(String applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+    
+    @PrePassivate
+    @Interceptors(EIDPWebAppCacheLogger.class)
+    public void passivate() {
+    }
+        
     @PreDestroy
+    @Interceptors(EIDPWebAppCacheLogger.class)
     public void remove() {
         sessionData_clear();
         sessionRef_clear();
@@ -189,10 +193,6 @@ public class EIDPWebAppCache implements HttpSessionListener {
 
     public String getApplicationContext() {
         return applicationContext;
-    }
-
-    public void setApplicationContext(String applicationContext) {
-        this.applicationContext = applicationContext;
     }
     
 }

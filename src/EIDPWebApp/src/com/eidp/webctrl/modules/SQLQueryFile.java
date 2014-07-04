@@ -6,28 +6,18 @@
 
 package com.eidp.webctrl.modules;
 
-import com.eidp.core.DB.DBMappingHomeRemote;
-import com.eidp.core.DB.DBMappingRemote;
 import com.eidp.UserScopeObject.UserScopeObject;
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote ;
 import com.eidp.xml.XMLDataAccess;
 
 import java.io.PrintWriter;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ejb.Handle;
 
 import java.rmi.RemoteException;
 import java.sql.*;
 import org.xml.sax.SAXException;
 import java.io.IOException;
 
-import javax.xml.parsers.* ;
-import org.w3c.dom.* ;
 
 import java.util.*;
 /**

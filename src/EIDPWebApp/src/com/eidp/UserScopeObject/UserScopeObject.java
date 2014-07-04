@@ -10,13 +10,10 @@ import javax.servlet.http.HttpSession;
 
 import java.util.HashMap ;
 import java.util.Vector ;
-
 import com.eidp.xml.XMLDataAccess;
-
 import com.eidp.core.DB.DBMappingRemote;
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote ;
-
 import com.eidp.webctrl.SharedMethods ;
+import com.eidp.webctrl.WebAppCache.EIDPWebAppCache;
 
 /**
  *
@@ -57,7 +54,7 @@ public class UserScopeObject {
     public XMLDataAccess xmlColorAccess;
     public XMLDataAccess xmlApplication;
     public DBMappingRemote dbMapper = null ;
-    public EIDPWebAppCacheRemote eidpWebAppCache = null ;
+    public EIDPWebAppCache eidpWebAppCache = null ;
     public boolean preLoadFlag = false ;
     public boolean multiFlag = false ;
     public HashMap colorMap = new HashMap() ;

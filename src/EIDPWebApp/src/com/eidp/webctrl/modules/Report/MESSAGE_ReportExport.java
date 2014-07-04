@@ -6,25 +6,17 @@
 
 package com.eidp.webctrl.modules.Report;
 
-import com.eidp.core.DB.DBMappingHomeRemote;
-import com.eidp.core.DB.DBMappingRemote;
 import com.eidp.UserScopeObject.UserScopeObject;
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote ;
 
 import java.io.PrintWriter;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ejb.Handle;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import org.xml.sax.SAXException;
 import java.io.IOException;
-import java.sql.*;
 
 /**
  *

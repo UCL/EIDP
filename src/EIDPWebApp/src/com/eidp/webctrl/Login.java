@@ -6,17 +6,12 @@
 
 package com.eidp.webctrl;
 
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote ;
-import javax.ejb.Handle ;
+import com.eidp.webctrl.WebAppCache.EIDPWebAppCache;
 
 import com.eidp.xml.XMLDataAccess;
-import com.eidp.logger.Logger;
-
-import org.xml.sax.SAXException ;
 
 import java.io.PrintWriter;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -89,7 +84,7 @@ public class Login extends HttpServlet {
             this.applicationContext = (String)request.getParameter( "applicationContext" ) ;
         } else {
             HttpSession session = request.getSession() ;
-            EIDPWebAppCacheRemote eidpWebAppCache = (EIDPWebAppCacheRemote)((Handle)session.getAttribute( "eidpWebAppCacheHandle" )).getEJBObject() ;
+            EIDPWebAppCache eidpWebAppCache = (EIDPWebAppCache) session.getAttribute( "eidpWebAppCacheHandle" ) ;
             this.applicationContext = (String)eidpWebAppCache.sessionData_get( "applicationContext" ) ;
         }
         try {

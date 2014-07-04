@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE glassfish-web-app PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Servlet 3.0//EN" "http://glassfish.org/dtds/glassfish-web-app_3_0-1.dtd">
 <glassfish-web-app error-url="">
-    <context-root>/EIDPWebApp</context-root>
-    <ejb-ref>
-        <ejb-ref-name>DBMapping</ejb-ref-name>
-        <jndi-name>ejb/DBMapping</jndi-name>
-    </ejb-ref>
-    <ejb-ref>
-        <ejb-ref-name>EIDPWebAppCache</ejb-ref-name>
-        <jndi-name>ejb/EIDPWebAppCache</jndi-name>
-    </ejb-ref>
-    <class-loader delegate="true"/>
-    <jsp-config>
-        <property name="keepgenerated" value="true">
-            <description>Keep a copy of the generated servlet class' java code.</description>
-        </property>
-    </jsp-config>
-    <locale-charset-info>
-        <locale-charset-map locale="" charset=""/>
-        <parameter-encoding default-charset="UTF-8"/>
-    </locale-charset-info>
+  <context-root>/EIDPWebApp</context-root>
+  <ejb-ref>
+    <ejb-ref-name>DBMapping</ejb-ref-name>
+    <jndi-name>ejb/DBMapping</jndi-name>
+  </ejb-ref>
+  <ejb-ref>
+    <ejb-ref-name>EIDPWebAppCache</ejb-ref-name>
+    <jndi-name>ejb/EIDPWebAppCache</jndi-name>
+  </ejb-ref>
+  <class-loader delegate="true"/>
+  <jsp-config>
+    <property name="keepgenerated" value="true">
+      <description>Keep a copy of the generated servlet class' java code.</description>
+    </property>
+  </jsp-config>
+  <locale-charset-info>
+    <locale-charset-map charset="" locale=""/>
+    <parameter-encoding default-charset="UTF-8"/>
+  </locale-charset-info>
 </glassfish-web-app>

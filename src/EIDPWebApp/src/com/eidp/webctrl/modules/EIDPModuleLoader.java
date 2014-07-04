@@ -6,23 +6,13 @@
 
 package com.eidp.webctrl.modules;
 
-import com.eidp.core.DB.DBMappingHomeRemote;
-import com.eidp.core.DB.DBMappingRemote;
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCacheRemote ;
 
 import java.io.PrintWriter;
 
 import com.eidp.UserScopeObject.UserScopeObject ;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ejb.Handle ;
-
-import java.util.HashMap ;
-import java.util.Vector ;
 
 import java.lang.reflect.* ;
 
