@@ -5,7 +5,7 @@ DTD GlassFish Application Server 3.1 EJB 3.1//EN"
 <glassfish-ejb-jar>
   <enterprise-beans>      
     <ejb>         
-      <ejb-name>ejb/EIDPWebAppCache</ejb-name>         
+      <ejb-name>EIDPWebAppCache</ejb-name>         
       <jndi-name>EIDPWebAppCache</jndi-name>         
       <is-read-only-bean>false</is-read-only-bean>         
       <commit-option>B</commit-option>         
