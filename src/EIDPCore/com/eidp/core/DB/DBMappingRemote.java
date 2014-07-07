@@ -6,9 +6,12 @@
 
 package com.eidp.core.DB;
 
+import java.io.IOException;
 import javax.ejb.EJBObject;
 import java.util.Vector;
 import java.util.HashMap;
+import javax.ejb.CreateException;
+import javax.ejb.Remote;
 
 /**
  * Remote Interface for DBMapping.
@@ -32,7 +35,8 @@ import java.util.HashMap;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  */
-public interface DBMappingRemote extends EJBObject {
+@Remote
+public interface DBMappingRemote {
     
     /**
      * DBAction reads in the necessary information to process the required SQL
@@ -82,10 +86,13 @@ public interface DBMappingRemote extends EJBObject {
     
     public boolean isAuthenticated() throws java.rmi.RemoteException ;
     
-    public Object getException() throws java.rmi.RemoteException ;
-    
-    public void setException( Object e ) throws java.rmi.RemoteException ;
-    
-    public void resetException() throws java.rmi.RemoteException ;
-    
+    public void setApplicationContext(String applicationContext) throws IOException, CreateException;
+
+    public void resetException() throws Exception;
+
+    public void setException(Object o) throws Exception;
+
+    public Object getException() throws Exception;
+
+    public void remove();
 }

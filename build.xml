@@ -58,6 +58,15 @@
         <include name="*.jar"/>
       </fileset>
     </path>
+    <path id="test.classpath">
+      <fileset dir="${libdir}">
+	<include name="testng-6.8.jar"/>
+	<include name="jcommander-1.27.jar"/>
+	<include name="glassfish-embedded-all-3.1.2.2.jar"/>
+	<include name="javaee-api-6.0.jar"/>
+      </fileset>
+      <fileset dir="test/classes" includes="**.*" />
+    </path>
 
     <target name="init">
         <tstamp/>
@@ -94,7 +103,19 @@
     <target name="resolve" depends="init-ivy" description="--> retrieve dependencies with ivy">
         <ivy:settings file="ivy-settings.xml" />
         <ivy:resolve />
-	<ivy:retrieve />
+	<!--
+	<ivy:report todir="build/ivy-report" graph="false"/>
+	-->
+	<ivy:retrieve conf="test,default"/>
+    </target>
+    <target name="init-testng" depends="resolve" description="--> configure testng Ant task">
+      <taskdef resource="testngtasks" classpathref="test.classpath"/>
+      <delete quiet="true">
+	<fileset dir="test/classes" includes="**/*"/>
+      </delete>
+      <mkdir dir="test/classes"/>
+      <mkdir dir="test/report"/>
+      <mkdir dir="test/resources"/>
     </target>
 
     <!-- ============ -->
@@ -233,7 +254,7 @@
     </target>
 
     <!-- EIDPCoreApp -->
-    <target depends="EIDPServices_Dist,EIDPWebApp_Dist" name="EIDPCoreApp_Dist">
+    <target depends="EIDPServices_Dist,EIDPWebApp_Dist" name="EIDPCoreApp_Dist" description="--> build EIDP ear application">
         <copy filtering="false" todir="${EIDPCoreApp}" overwrite="true">
             <fileset dir="${dist}">
                 <include name="EIDPCore.jar"/>
@@ -253,8 +274,20 @@
         <jar basedir="${EIDPDataNode}" jarfile="${dist}/EIDPDataNode${VERSION}.ear"/>
     </target>
     
-    <target name="test">
+    <target depends="init-testng" name="test-compile">
+      <javac destdir="test/classes" srcdir="test/EIDPWebAppCache" classpathref="test.classpath">
+	<classpath>
+	  <pathelement path="${EIDPWebAppCache}"/>
+	  <path refid="test.classpath"/>
+	</classpath>
+      </javac>
+    </target>
+
+    <target depends="test-compile,EIDPWebAppCache_Dist" name="test" description="--> run TestNG tests">
     	<echo>Apache Ant test task required by Travis CI</echo>
+	<testng classpath="test/classes;lib/testng-6.8.jar;lib/jcommander-1.27.jar;lib/glassfish-embedded-all-3.1.2.jar;dist/EIDPLib.jar;build/EIDPWebAppCache" outputdir="test/report">
+	  <xmlfileset dir="test" includes="testng.xml"/>
+	</testng>
     </target>
     
 </project>
