@@ -15,10 +15,12 @@
             <context-root>EIDPWebApp</context-root>        
         </web>    
     </module>    
+<!--
     <module>        
         <web>            
             <web-uri>EIDPServices.war</web-uri>            
             <context-root>EIDPServices</context-root>        
         </web>    
     </module>
+-->
 </application>
