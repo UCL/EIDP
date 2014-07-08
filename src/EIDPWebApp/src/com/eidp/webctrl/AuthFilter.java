@@ -149,9 +149,8 @@ public class AuthFilter implements Filter {
 //                cacheProp.setProperty( "org.omg.CORBA.ORBInitialHost" , "localhost" ) ;
 //                cacheProp.setProperty( "org.omg.CORBA.ORBInitialPort" , "33365" ) ;
                 Context cacheJndiContext = new InitialContext( cacheProp );
-                EIDPWebAppCache cacheRef = (EIDPWebAppCache) cacheJndiContext.lookup("java:global/EIDPCoreApp3/EIDPWebAppCache/EIDPWebAppCache!com.eidp.webctrl.WebAppCache.EIDPWebAppCache");
-                cacheRef.setApplicationContext(uso.applicationContext);
-                uso.eidpWebAppCache = cacheRef;
+                uso.eidpWebAppCache = (EIDPWebAppCache) cacheJndiContext.lookup("java:global/EIDPCoreApp3/EIDPWebAppCache/EIDPWebAppCache!com.eidp.webctrl.WebAppCache.EIDPWebAppCache");
+                uso.eidpWebAppCache.setApplicationContext(uso.applicationContext);
             } catch ( javax.naming.NamingException ne ) {
                 throw new javax.servlet.ServletException( "AuthFilter throws NamingException when calling EIDPWebAppCache: " + ne ) ;
             }  
@@ -442,16 +441,16 @@ public class AuthFilter implements Filter {
     }
     
     private void killAllSessionData( HttpSession session , UserScopeObject uso ) {
-        DBMappingRemote dbm = (DBMappingRemote) session.getAttribute("dbMapperHandle");
-        if (dbm != null) {
+        if (session.getAttribute("dbMapperHandle") != null) {
+            DBMappingRemote dbm = (DBMappingRemote) session.getAttribute("dbMapperHandle");
             dbm.remove();
+            session.removeAttribute( "dbMapperHandle" ) ;
         }
-        EIDPWebAppCache wac = (EIDPWebAppCache) session.getAttribute("eidpWebAppCacheHandle");
-        if (wac != null) {
+        if (session.getAttribute("eidpWebAppCacheHandle") != null) {
+            EIDPWebAppCache wac = (EIDPWebAppCache) session.getAttribute("eidpWebAppCacheHandle");
             wac.remove();
+            session.removeAttribute("eidpWebAppCacheHandle");
         }
-        session.removeAttribute("eidpWebAppCacheHandle");
-        session.removeAttribute( "dbMapperHandle" ) ;
     }
     
     /**

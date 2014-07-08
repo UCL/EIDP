@@ -167,7 +167,7 @@
         <jar basedir="${EIDPWebAppCache}" jarfile="${dist}/EIDPWebAppCache.jar"/>
     </target>
     <target depends="EIDPCore_Compile" name="EIDPWebAppCache_Compile">
-        <javac destdir="${EIDPWebAppCache}" srcdir="${webappcache}">
+        <javac destdir="${EIDPWebAppCache}" srcdir="${webappcache}" debug="true" debuglevel="lines,source">
             <classpath>
                 <pathelement path="${EIDPLib}"/>
 		<path refid="build.classpath"/>

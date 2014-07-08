@@ -104,7 +104,7 @@ public class Controller extends HttpServlet {
             this.sidePanelModule( request , response , uso ) ;
         } else if ( request.getParameter( "BottomPanelModule" ) != null ) {
             this.sponsorsModule( request , response , uso ) ;
-        } else {
+        } else if (uso.eidpWebAppCache.sessionData_containsKey("module")) {
             if ( ((String)uso.eidpWebAppCache.sessionData_get( "module" )).equals( "Function" ) ) {
                 if ( ((String)uso.eidpWebAppCache.sessionData_get( "moduleParameter" )).equals( "init" ) ) {
                     this.setUserScopeObjectBeans( uso ) ;

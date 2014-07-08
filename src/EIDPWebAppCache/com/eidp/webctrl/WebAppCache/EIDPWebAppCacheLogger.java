@@ -24,11 +24,13 @@ public class EIDPWebAppCacheLogger {
     @AroundInvoke
     public Object createLogger(InvocationContext invocationContext) throws Exception {
         Object[] parameters = invocationContext.getParameters();
-        if (parameters.length == 1) {
+        if (null != parameters && parameters.length == 1) {
             ctx = (String) parameters[0];
         }
-        EIDPWebAppCacheLogger.logger = new Logger( "/com/eidp/" + ctx + "/WebAppCache.log" );
-        EIDPWebAppCacheLogger.logger.logMessage( "Initializing WebAppCacheLog with Context: " + ctx + "." );
+        if (!ctx.equals("")) {
+            EIDPWebAppCacheLogger.logger = new Logger( "/com/eidp/" + ctx + "/WebAppCache.log" );
+            EIDPWebAppCacheLogger.logger.logMessage( "Initializing WebAppCacheLog with Context: " + ctx + "." );
+        }
         return invocationContext.proceed();
     }
     
