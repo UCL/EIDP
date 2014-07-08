@@ -7,7 +7,7 @@
 package com.eidp.webctrl;
 
 import com.eidp.UserScopeObject.UserScopeObject ;
-import com.eidp.core.DB.DBMapping;
+import com.eidp.core.DB.DBMappingRemote;
 import com.eidp.webctrl.modules.EIDPModuleLoader ;
 import com.eidp.webctrl.modules.EIDPAddInLoader;
 import java.io.PrintWriter;
@@ -2649,7 +2649,7 @@ public class Controller extends HttpServlet {
     }
     
     private void setUserScopeObjectBeans( UserScopeObject uso ) throws java.rmi.RemoteException {
-        uso.dbMapper = (DBMapping) uso.session.getAttribute( "dbMapperHandle" ) ;
+        uso.dbMapper = (DBMappingRemote) uso.session.getAttribute( "dbMapperHandle" ) ;
         uso.eidpWebAppCache = (EIDPWebAppCache) uso.session.getAttribute( "eidpWebAppCacheHandle" ) ;
         uso.applicationContext = (String)uso.eidpWebAppCache.sessionData_get( "applicationContext" ) ;
         uso.userLogin = (String)uso.eidpWebAppCache.sessionData_get( "userLogin" ) ;

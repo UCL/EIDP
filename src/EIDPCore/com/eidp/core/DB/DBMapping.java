@@ -23,6 +23,7 @@ import org.w3c.dom.NodeList;
 import javax.servlet.http.HttpSessionListener ;
 import javax.servlet.http.HttpSessionEvent ;
 import java.util.Date ;
+import javax.annotation.Resource;
 import javax.ejb.Remote;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
@@ -63,7 +64,6 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
     /**
      * Session Context Method.
      */
-    public SessionContext context;
     private final HashMap dataSourceClasses = new HashMap();
     private final HashMap dataSourceObjects = new HashMap() ;
     private String dataSourceIDCache = "default" ;
@@ -77,6 +77,9 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
     private Logger logger = null ;
     private final FileHandler fh = null ;
     private final int LOGIN_TIMEOUT = 120000 ;
+    
+    @Resource
+    private SessionContext context;
     
     @Override
     public void setApplicationContext(String applicationContext) throws IOException {
@@ -700,23 +703,6 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
         }
         this.dataSourceClasses.clear() ;
         this.logger.removeHandler(fh);
-    }
-    
-    /**
-     * Standard EJB-Method.
-     * @param sessionContext EJB SessionContext.
-     * @throws EJBException
-     * @throws RemoteException
-     */
-    public void setSessionContext(SessionContext sessionContext) throws javax.ejb.EJBException, java.rmi.RemoteException {
-        this.context = sessionContext;
-    }
-    
-    /**
-     * Standard EJB-Method.
-     */
-    public void unsetSessionContext(){
-        this.context = null;
     }
     
     /**

@@ -3,10 +3,10 @@
 <glassfish-ejb-jar>
   <enterprise-beans>
     <ejb>
-      <ejb-name>ejb/DBMapping</ejb-name>
+      <ejb-name>DBMapping</ejb-name>
       <jndi-name>DBMapping</jndi-name>
       <ejb-ref>
-        <ejb-ref-name>ejb/DBRemoteMapping</ejb-ref-name>
+        <ejb-ref-name>DBRemoteMapping</ejb-ref-name>
         <jndi-name>corbaname:iiop:127.0.0.1:3700#DBMapping</jndi-name>
       </ejb-ref>
       <bean-pool>

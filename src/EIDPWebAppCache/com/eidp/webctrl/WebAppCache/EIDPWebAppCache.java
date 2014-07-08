@@ -5,6 +5,7 @@ import java.util.Vector;
 import javax.annotation.PreDestroy;
 import javax.ejb.LocalBean;
 import javax.ejb.PrePassivate;
+import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpSessionEvent;
@@ -174,7 +175,7 @@ public class EIDPWebAppCache implements HttpSessionListener {
     public void passivate() {
     }
         
-    @PreDestroy
+    @Remove
     @Interceptors(EIDPWebAppCacheLogger.class)
     public void remove() {
         sessionData_clear();
