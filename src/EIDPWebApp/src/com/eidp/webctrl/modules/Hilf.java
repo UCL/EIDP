@@ -9,7 +9,6 @@ package com.eidp.webctrl.modules;
 import java.util.StringTokenizer;
 import java.sql.ResultSet;
 import java.util.HashMap;
-import java.io.PrintWriter;
 import java.util.Vector;
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
@@ -17,8 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import sun.misc.BASE64Decoder;
-import java.io.BufferedReader;
 
 /**
  *
@@ -525,16 +522,11 @@ public class Hilf {
     }
     
     public String decodeRTF(String encodedString){
-        BASE64Decoder decoder = new BASE64Decoder();
         String decString = "";
-        try{
-            if(encodedString != null && !encodedString.trim().equals("")){
-                byte[] decodedByteArray = decoder.decodeBuffer( encodedString ) ;
-                decString = new String( decodedByteArray, 0 , decodedByteArray.length , "ISO8859-15" ) ;
-                decString = decString.substring(0, decString.lastIndexOf('}') + 1).replaceAll("\\n", "").replaceAll("\\r", " ");
-            }
-        }catch(java.io.IOException io){
-            System.out.println( io );
+        if(encodedString != null && !encodedString.trim().equals("")){
+            byte[] decodedByteArray = javax.xml.bind.DatatypeConverter.parseBase64Binary(encodedString);
+            decString = new String( decodedByteArray, 0 , decodedByteArray.length) ;
+            decString = decString.substring(0, decString.lastIndexOf('}') + 1).replaceAll("\\n", "").replaceAll("\\r", " ");
         }
         return decString;
     }

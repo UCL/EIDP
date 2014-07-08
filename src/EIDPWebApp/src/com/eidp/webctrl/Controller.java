@@ -6,40 +6,25 @@
 
 package com.eidp.webctrl;
 
-import com.eidp.core.DB.DBMappingHomeRemote;
-import com.eidp.core.DB.DBMappingRemote;
 import com.eidp.UserScopeObject.UserScopeObject ;
+import com.eidp.core.DB.DBMapping;
 import com.eidp.webctrl.modules.EIDPModuleLoader ;
 import com.eidp.webctrl.modules.EIDPAddInLoader;
 import java.io.PrintWriter;
-
 import com.eidp.xml.XMLDataAccess;
-import com.eidp.logger.Logger;
 import com.eidp.webctrl.WebAppCache.EIDPWebAppCache;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletConfig;
-import javax.ejb.Handle ;
-
 import java.lang.reflect.Constructor;
-
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
-
 import java.util.HashMap ;
 import java.util.Vector ;
 import java.util.Set ;
 import java.util.Iterator ;
-import java.util.regex.Pattern ;
-
 import java.util.Date ;
-
-import sun.misc.BASE64Encoder;
-import sun.misc.BASE64Decoder;
 
 
 /**
@@ -77,12 +62,14 @@ public class Controller extends HttpServlet {
      * @param config
      * @throws ServletException
      */
+    @Override
     public void init(ServletConfig config) throws javax.servlet.ServletException {
         super.init(config);
     }
     
     /** Destroys the servlet.
      */
+    @Override
     public void destroy() {
         
     }
@@ -252,15 +239,12 @@ public class Controller extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException , java.io.IOException {
         try {
             processRequest(request, response);
-        } catch ( java.sql.SQLException se ) {
+        } catch ( java.sql.SQLException | org.xml.sax.SAXException | javax.xml.parsers.ParserConfigurationException se ) {
             throw new javax.servlet.ServletException( "org.eidp.webctrl.Controller throws Exception: " + se ) ;
-        } catch ( org.xml.sax.SAXException saxe ) {
-            throw new javax.servlet.ServletException( "org.eidp.webctrl.Controller throws Exception: " + saxe ) ;
-        } catch ( javax.xml.parsers.ParserConfigurationException pe ) {
-            throw new javax.servlet.ServletException( "org.eidp.webctrl.Controller throws Exception: " + pe ) ;
         }
     }
     
@@ -271,15 +255,12 @@ public class Controller extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException , java.io.IOException {
         try {
             processRequest(request, response);
-        } catch ( java.sql.SQLException se ) {
+        } catch ( java.sql.SQLException | org.xml.sax.SAXException | javax.xml.parsers.ParserConfigurationException se ) {
             throw new javax.servlet.ServletException( "org.eidp.webctrl.Controller throws Exception: " + se ) ;
-        } catch ( org.xml.sax.SAXException saxe ) {
-            throw new javax.servlet.ServletException( "org.eidp.webctrl.Controller throws Exception: " + saxe ) ;
-        } catch ( javax.xml.parsers.ParserConfigurationException pe ) {
-            throw new javax.servlet.ServletException( "org.eidp.webctrl.Controller throws Exception: " + pe ) ;
         }
     }
     
@@ -287,6 +268,7 @@ public class Controller extends HttpServlet {
      * Returns a short description of the servlet.
      * @return
      */
+    @Override
     public String getServletInfo() {
         return "EIDP Web Controller Servlet.";
     }
@@ -1949,8 +1931,7 @@ public class Controller extends HttpServlet {
             // 1.2 encode new password to SHA-1 hash( BASE64Encoded )
             String formNewPWD = (String)request.getParameter( "newpwd01" ) ;
             String encryptedNewPWD = new String( encrypt( formNewPWD ) ) ;
-            BASE64Encoder encoder = new BASE64Encoder();
-            encryptedNewPWD=encoder.encode( encryptedNewPWD.getBytes() ) ;
+            encryptedNewPWD = javax.xml.bind.DatatypeConverter.printBase64Binary(encryptedNewPWD.getBytes());
             // 2. get Password from database
             HashMap paramMap = new HashMap() ;
             paramMap.put( "login" , uso.userLogin ) ;
@@ -1964,8 +1945,7 @@ public class Controller extends HttpServlet {
                 // 2.1 decode DB-PWD
                 //                BASE64Decoder decoder = new BASE64Decoder() ;
                 //                dbPassword = new String( decoder.decodeBuffer( dbPassword ) ) ;
-                BASE64Encoder pwdEncoder = new BASE64Encoder() ;
-                formPassword = new String( pwdEncoder.encode( formPassword.getBytes() ).toString()  ) ;
+                formPassword = javax.xml.bind.DatatypeConverter.printBase64Binary(formPassword.getBytes());
             }
             // 3. compare password to db-password
             if ( dbPassword.equals( formPassword ) ) {
@@ -2656,8 +2636,7 @@ public class Controller extends HttpServlet {
     
     private String encryptString( String encryptString ) throws java.lang.Exception {
         encryptString = new String( encrypt( encryptString ) ) ;
-        BASE64Encoder encoder = new BASE64Encoder();
-        encryptString = encoder.encode( encryptString.getBytes() ) ;
+        encryptString = javax.xml.bind.DatatypeConverter.printBase64Binary(encryptString.getBytes());
         return encryptString ;
     }
     
@@ -2670,7 +2649,7 @@ public class Controller extends HttpServlet {
     }
     
     private void setUserScopeObjectBeans( UserScopeObject uso ) throws java.rmi.RemoteException {
-        uso.dbMapper = (DBMappingRemote)((Handle)uso.session.getAttribute( "dbMapperHandle" )).getEJBObject() ;
+        uso.dbMapper = (DBMapping) uso.session.getAttribute( "dbMapperHandle" ) ;
         uso.eidpWebAppCache = (EIDPWebAppCache) uso.session.getAttribute( "eidpWebAppCacheHandle" ) ;
         uso.applicationContext = (String)uso.eidpWebAppCache.sessionData_get( "applicationContext" ) ;
         uso.userLogin = (String)uso.eidpWebAppCache.sessionData_get( "userLogin" ) ;

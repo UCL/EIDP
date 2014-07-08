@@ -1,20 +1,15 @@
 package com.eidp.core.DB.modules;
 
-import com.eidp.core.DB.DBMappingHomeRemote;
 import com.eidp.core.DB.DBMappingRemote;
 import com.eidp.xml.XMLDataAccess ;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.rmi.PortableRemoteObject;
-
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import java.util.logging.*;
 
 /**
@@ -47,50 +42,45 @@ public class DataSourceDispatcher extends DataSourceMapping implements DataSourc
     private Object Exception = null ;
     
     
-    public DataSourceDispatcher( String appContext , NodeList dataSourceNode , XMLDataAccess xmlda , Logger logger ) throws java.io.IOException , org.xml.sax.SAXException , java.sql.SQLException {
+    public DataSourceDispatcher( String appContext , NodeList dataSourceNode , XMLDataAccess xmlda , Logger logger ) throws java.io.IOException , org.xml.sax.SAXException {
         logger.info("DataSourceDispatcher called");
         this.xmlDataAccess = xmlda ;
         String ejbReference = (String) ( (Vector)xmlda.getElementsByName( "ejb-ref" , dataSourceNode ) ).get( 0 ) ;
         String contextToCall = (String) ( (Vector)xmlda.getElementsByName( "context" , dataSourceNode )).get(0);
-        logger.info("DataSourceDispatcher: Instantiating with parameters: ejb-ref="+ejbReference+" contextToCall: "+contextToCall);
+        logger.log(Level.INFO, "DataSourceDispatcher: Instantiating with parameters: ejb-ref={0} contextToCall: {1}", new Object[]{ejbReference, contextToCall});
         try {
-            logger.info("DataSourceDispatcher: looking up remote DBMapping ("+ejbReference+"): "+contextToCall);            
+            logger.log(Level.INFO, "DataSourceDispatcher: looking up remote DBMapping ({0}): {1}", new Object[]{ejbReference, contextToCall});            
             Properties prop = new Properties();
             Context jndiContext = new InitialContext() ;
-            Object ref = jndiContext.lookup(ejbReference);
             logger.fine("DataSourceDispatcher: DBMapping object reference obtained");
-            DBMappingHomeRemote home = (DBMappingHomeRemote) PortableRemoteObject.narrow(ref, DBMappingHomeRemote.class);
             logger.fine("DataSourceDispatcher: create dbMapper");
-            this.dbMapper = home.create( appContext ) ;
+            this.dbMapper = (DBMappingRemote) jndiContext.lookup(ejbReference);
             logger.fine("DataSourceDispatcher: dbMapper created");
-        } catch ( javax.ejb.CreateException ce ) {
-            logger.severe("DataSourceDispatcher: CreateException in DataSourceDispatcher: "+ce);
-            throw new IOException( "CreateException by DataSourceDispatcher: " + "" + "" + ce ) ;
+            this.dbMapper.setApplicationContext(appContext);            
         } catch ( javax.naming.NamingException ne ) {
-            logger.severe("DataSourceDispatcher: NamingException in DataSourceDispatcher: "+ne);
+            logger.log(Level.SEVERE, "DataSourceDispatcher: NamingException in DataSourceDispatcher: {0}", ne);
             throw new IOException( "Naming Exception by DataSourceDispatcher: " + ne ) ;
-        } catch ( java.sql.SQLException sqle ) {
-            logger.severe("DataSourceDispatcher: SQLException in DataSourceDispatcher: "+sqle);
-            throw new IOException( "SQL Exception by DataSourceDispatcher: " + sqle ) ;
         } catch ( java.rmi.RemoteException re ) {
-            logger.severe("DataSourceDispatcher: RemoteException in DataSourceDispatcher: "+re);
+            logger.log(Level.SEVERE, "DataSourceDispatcher: RemoteException in DataSourceDispatcher: {0}", re);
             throw new IOException( "RemoteException by DataSourceDispatcher: " + re ) ;
         } catch ( java.io.IOException ioe ) {
-            logger.severe("DataSourceDispatcher: IOException in DataSourceDispatcher: "+ioe);
+            logger.log(Level.SEVERE, "DataSourceDispatcher: IOException in DataSourceDispatcher: {0}", ioe);
             throw new IOException( "IOException by DataSourceDispatcher: " + ioe ) ;
         } catch (java.lang.ClassCastException e){
-            logger.severe("DataSourceDispatcher: ClassCastException in DataSourceDispatcher: "+e);
+            logger.log(Level.SEVERE, "DataSourceDispatcher: ClassCastException in DataSourceDispatcher: {0}", e);
             throw new IOException("ClassCastExceptionb by DataSourceDispatcher: "+e);
         }
     }
     
+    @Override
     public void ProcessDBAction(NodeList dataSetNode, NodeList methodNode, HashMap paramMap , Logger logger) throws Exception, SAXException, IOException {
         String dataset = (String) ( (Vector)this.xmlDataAccess.getElementsByName( "name" , dataSetNode )).get( 0 ) ;
         String method = (String) ( (Vector)this.xmlDataAccess.getElementsByName( "name" , methodNode )).get(0) ;
-        logger.fine("DataSourceDispatcher: Dispatching dataset: "+dataset+" method: "+method);
+        logger.log(Level.FINE, "DataSourceDispatcher: Dispatching dataset: {0} method: {1}", new Object[]{dataset, method});
         this.dbMapper.DBAction( dataset , method , paramMap ) ;
     }
     
+    @Override
     public Vector getRowRange(Integer rowNumber, Integer endRow) {
         Vector returnVector = new Vector() ;
         try {
@@ -101,6 +91,7 @@ public class DataSourceDispatcher extends DataSourceMapping implements DataSourc
         return returnVector ;
     }
     
+    @Override
     public HashMap getRow(Integer rowNumber) {
         HashMap returnMap = new HashMap() ;
         try {
@@ -111,6 +102,7 @@ public class DataSourceDispatcher extends DataSourceMapping implements DataSourc
         return returnMap;
     }
     
+    @Override
     public Integer size() {
         int size = 0;
         try {
@@ -121,28 +113,28 @@ public class DataSourceDispatcher extends DataSourceMapping implements DataSourc
         return Integer.valueOf(String.valueOf(size));
     }
     
+    @Override
     public void closeConnection( Logger logger ) throws Exception {
         this.dbMapper.remove() ;
     }
     
-    public HashMap Authenticate( String TW_PRINCIPAL , String TW_CREDENTIALS ) throws Exception {
+    public HashMap Authenticate( String TW_PRINCIPAL , String TW_CREDENTIALS ) {
         HashMap returnMap = new HashMap() ;
-        try {
-            returnMap = this.dbMapper.Authenticate( TW_PRINCIPAL , TW_CREDENTIALS ) ;
-        } catch ( java.rmi.RemoteException e ) {
-            this.setException(e);
-        }
+        returnMap = this.dbMapper.Authenticate( TW_PRINCIPAL , TW_CREDENTIALS ) ;
         return returnMap ;
     }
     
+    @Override
     public Object getException() {
         return this.Exception ;
     }
     
+    @Override
     public void setException(Object o) {
         this.Exception = o ;
     }
     
+    @Override
     public void resetException() {
         this.Exception = null ;
     }

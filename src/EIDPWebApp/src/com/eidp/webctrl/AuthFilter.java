@@ -12,18 +12,15 @@
 
 package com.eidp.webctrl;
 
-import com.eidp.core.DB.DBMappingHomeRemote;
-import com.eidp.core.DB.DBMappingRemote;
+import com.eidp.core.DB.DBMapping;
 import com.eidp.webctrl.WebAppCache.EIDPWebAppCache;
 import com.eidp.logger.Logger;
-import java.rmi.RemoteException;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.naming.InitialContext;
 import javax.naming.Context;
-import javax.rmi.PortableRemoteObject;
 import java.util.Properties;
 import java.util.HashMap;
 import java.util.Vector;
@@ -38,11 +35,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext ;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-import sun.misc.BASE64Encoder;
-import javax.ejb.Handle ;
 import java.util.Set ;
-import java.util.logging.Level;
-import javax.ejb.RemoveException;
 
 /**
  * Authentication Filter for Single-Sign-On functionality.
@@ -302,8 +295,6 @@ public class AuthFilter implements Filter {
             this.logger.logMessage( "***** Session: ***** " ) ;
             this.logger.logMessage( session.toString() ) ;
             this.logger.logMessage( "******************** " ) ;
-            // Handle dbMapperHandle = (Handle)((DBMappingRemote)uso.dbMapper).getHandle() ;
-            // session.setAttribute( "dbMapperHandle" , uso.dbMapperHandle ) ;
         } else {
             if ( this.logLevel > 7 ) this.logger.logMessage( "setting Session only for applicationContext: " + uso.applicationContext + "." ) ;
             // session = ((HttpServletRequest)request).getSession() ;
@@ -357,8 +348,8 @@ public class AuthFilter implements Filter {
     
     // compare Passwords and set Session vars
     private UserScopeObject comparePasswordsAndSetSession( String eidpLogin , String eidpPassword , HttpSession session , UserScopeObject uso ) throws Exception, java.io.IOException, javax.servlet.ServletException {
-        DBMappingRemote dbMapper = null ;
-        HashMap authData = new HashMap() ;
+        DBMapping dbMapper = null;
+        HashMap authData;
         try {
             if ( this.logLevel > 5 ) this.logger.logMessage( "!!! comparePasswordsAndSetSession called with:" ) ;
             if ( this.logLevel > 5 ) this.logger.logMessage( "!!! login: " + eidpLogin ) ;
@@ -370,35 +361,15 @@ public class AuthFilter implements Filter {
 //                prop.setProperty( "org.omg.CORBA.ORBInitialHost" , "localhost" ) ;
 //                prop.setProperty( "org.omg.CORBA.ORBInitialPort" , "3700" ) ;
                 Context jndiContext = new InitialContext( prop ) ;
-                Object ref = jndiContext.lookup("DBMapping");
-                DBMappingHomeRemote home = (DBMappingHomeRemote) PortableRemoteObject.narrow(ref, DBMappingHomeRemote.class);
-                dbMapper = home.create( uso.applicationContext ) ;
+                dbMapper = (DBMapping) jndiContext.lookup("DBMapping");
+                dbMapper.setApplicationContext(uso.applicationContext);
             }
-            try {
-                authData = dbMapper.Authenticate( eidpLogin , eidpPassword ) ;
-            } catch ( java.lang.NullPointerException ne ) {
-                Properties prop = new Properties() ;
-//                prop.setProperty( "org.omg.CORBA.ORBInitialHost" , "localhost" ) ;
-//                prop.setProperty( "org.omg.CORBA.ORBInitialPort" , "3700" ) ;
-                Context jndiContext = new InitialContext( prop ) ;
-                Object ref = jndiContext.lookup("DBMapping") ;
-                DBMappingHomeRemote home = (DBMappingHomeRemote) PortableRemoteObject.narrow(ref, DBMappingHomeRemote.class) ;
-                dbMapper = home.create( uso.applicationContext ) ; // here the problem
-                authData = dbMapper.Authenticate( eidpLogin , eidpPassword ) ;
-            }
+            authData = dbMapper.Authenticate(eidpLogin, eidpPassword);
             
             String loginTooOften = (String)authData.get("loginTooOften");
-            if ( loginTooOften != null && loginTooOften.equals("true") ){
-                hasTooManyLoginTrys = true;
-            } else {
-                hasTooManyLoginTrys = false; 
-            }
+            hasTooManyLoginTrys = loginTooOften != null && loginTooOften.equals("true");
             String loginError = (String)authData.get("loginPassError");
-            if ( loginError != null && loginError.equals("true") ){
-                hasLoginError = true;
-            } else {
-                hasLoginError = false; 
-            }
+            hasLoginError = loginError != null && loginError.equals("true");
             
             if ( dbMapper.isAuthenticated() ) {
                 uso.eidpWebAppCache.sessionData_set( "userLogin" , authData.get( "userLogin" ) ) ;
@@ -424,7 +395,7 @@ public class AuthFilter implements Filter {
                 }
                 uso.eidpWebAppCache.sessionData_set( "userCenter" , authData.get( "userCenter" ) ) ;
                 uso.checkAuth = true ;
-                session.setAttribute( "dbMapperHandle" , dbMapper.getHandle() ) ;
+                session.setAttribute( "dbMapperHandle" , dbMapper ) ;
             } else {
                 uso.checkAuth = false ;
                     dbMapper.remove() ;
@@ -466,23 +437,11 @@ public class AuthFilter implements Filter {
         }
     }
     
-    private void killAllSessionData( HttpSession session , UserScopeObject uso ) throws javax.servlet.ServletException , java.io.IOException {
-        try {
-            ((DBMappingRemote)((Handle)session.getAttribute( "dbMapperHandle" )).getEJBObject()).remove() ;
-        } catch ( javax.ejb.RemoveException rme ) {
-        } catch ( java.lang.NullPointerException nulle ) {
-        } catch ( java.rmi.NoSuchObjectException nsoe ) {
-        } catch (RemoteException ex) {
-        } 
-        ((EIDPWebAppCache) session.getAttribute("eidpWebAppCacheHandle")).remove();
-        try {    
-            session.removeAttribute("eidpWebAppCacheHandle");
-        } catch ( java.lang.NullPointerException nulle ) {
-        }
-        try {
-            session.removeAttribute( "dbMapperHandle" ) ;
-        } catch ( java.lang.NullPointerException nulle ) {
-        }
+    private void killAllSessionData( HttpSession session , UserScopeObject uso ) {
+        ((DBMapping) session.getAttribute("dbMapperHandle")).remove();
+        ((EIDPWebAppCache) session.getAttribute("eidpWebAppCacheHandle")).remove();   
+        session.removeAttribute("eidpWebAppCacheHandle");
+        session.removeAttribute( "dbMapperHandle" ) ;
     }
     
     /**
@@ -513,7 +472,7 @@ public class AuthFilter implements Filter {
     private class UserScopeObject {
         public ServletContext context;
         public String applicationContext ;
-        public DBMappingRemote dbMapper ;
+        public DBMapping dbMapper ;
         public EIDPWebAppCache eidpWebAppCache ;
         public boolean checkAuth = false ;
         

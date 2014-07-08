@@ -6,9 +6,8 @@
 
 package com.eidp.webctrl;
 
-import com.eidp.core.DB.DBMappingRemote;
+import com.eidp.core.DB.DBMapping;
 import java.io.IOException;
-
 import java.io.PrintWriter;
 import com.eidp.webctrl.modules.EIDPAddInLoader;
 import com.eidp.xml.XMLDataAccess;
@@ -17,17 +16,13 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ejb.Handle ;
-
 import org.w3c.dom.NodeList;
-
 import java.util.HashMap ;
 import java.util.Vector ;
 import java.util.Set ;
 import java.util.Iterator ;
 import java.util.StringTokenizer;
 import java.util.Date ;
-
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -35,9 +30,6 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import org.xml.sax.SAXException;
-
-import sun.misc.BASE64Encoder;
-
 import java.util.regex.Pattern ;
 import java.util.regex.Matcher ;
 
@@ -98,7 +90,7 @@ public class XMLDispatcher {
         //        uso.userRoles = (Vector)uso.session.getAttribute( "userRoles" ) ;
         //        uso.centerRoles = (HashMap)uso.session.getAttribute( "centerRoles" ) ;
         //synchronized( this.session.getId() ) {
-        uso.dbMapper = (DBMappingRemote)((Handle)uso.session.getAttribute( "dbMapperHandle" )).getEJBObject() ;
+        uso.dbMapper = (DBMapping)uso.session.getAttribute( "dbMapperHandle" ) ;
         // this.dbMapper.applicationConnect( this.applicationContext ) ;
         //}
         // get controller.xml
@@ -561,8 +553,6 @@ public class XMLDispatcher {
             fileReader = new BufferedReader( new FileReader( new File( file ) ) ) ;
         } catch ( java.io.FileNotFoundException fnfe ) {
             throw new java.io.IOException( "File not found: " + fnfe ) ;
-        } catch ( java.io.IOException ioe ) {
-            throw new java.io.IOException( "IO Exception: " + ioe ) ;
         }
         return fileReader ;
     }
@@ -1658,16 +1648,10 @@ public class XMLDispatcher {
                 HashMap paramMap = new HashMap() ;
                 paramMap.put( categoryID , category ) ;
                 paramMap.putAll( catParamMap ) ;
-                // 2. get Data from DataBase
-                try {
-                    uso.dbMapper.DBAction( dataset , method , paramMap ) ;
-                    Vector selectVector = new Vector() ;
-                    selectVector = uso.dbMapper.getRowRange( 0 , uso.dbMapper.size() ) ;
-                    uso.selectDBMap.put( category , selectVector ) ;
-                    // 3. Write options
-                } catch ( java.sql.SQLException sqle ) {
-                    throw new javax.servlet.ServletException( "Method createSelectBox throws SQL-Exception: " + sqle ) ;
-                }
+                uso.dbMapper.DBAction( dataset , method , paramMap ) ;
+                Vector selectVector = new Vector() ;
+                selectVector = uso.dbMapper.getRowRange( 0 , uso.dbMapper.size() ) ;
+                uso.selectDBMap.put( category , selectVector ) ;
             }
             boolean somethingSelected = false ;
             for ( int oi = 0 ; oi < ((Vector)uso.selectDBMap.get( category )).size() ; oi++ ) {
@@ -1847,22 +1831,15 @@ public class XMLDispatcher {
                     HashMap paramMap = new HashMap() ;
                     paramMap.put( categoryID , category ) ;
                     paramMap.putAll( catParamMap ) ;
-                    // 2. get Data from DataBase
-                    try {
-                        uso.dbMapper.DBAction( dataset , method , paramMap ) ;
-                        Vector selectVector = new Vector() ;
-                        selectVector = uso.dbMapper.getRowRange( 0 , uso.dbMapper.size() ) ;
-                        //uso.selectDBMap.put( category , selectVector ) ;
-                        // 3. Write options
-                        for (int i = 0; i < selectVector.size(); i++) {
-                            String selectID = (String)((HashMap)selectVector.get(i)).get(labelID);
-                            if (selectID.equals(fieldValue)) {
-                                showValue = (String)((HashMap)selectVector.get(i)).get(labelField);
-                                break;
-                            }
+                    uso.dbMapper.DBAction( dataset , method , paramMap ) ;
+                    Vector selectVector = new Vector() ;
+                    selectVector = uso.dbMapper.getRowRange( 0 , uso.dbMapper.size() ) ;
+                    for (int i = 0; i < selectVector.size(); i++) {
+                        String selectID = (String)((HashMap)selectVector.get(i)).get(labelID);
+                        if (selectID.equals(fieldValue)) {
+                            showValue = (String)((HashMap)selectVector.get(i)).get(labelField);
+                            break;
                         }
-                    } catch ( java.sql.SQLException sqle ) {
-                        throw new javax.servlet.ServletException( "Method createSelectBox throws SQL-Exception: " + sqle ) ;
                     }
                     
                 }
@@ -3033,6 +3010,8 @@ public class XMLDispatcher {
             }
         } catch ( java.sql.SQLException se ) {
             throw new javax.servlet.ServletException( "XMLDispatcher throws SQLException in processWriteAction (DataSet: " + dataset + "; method: " + method + "; " + se ) ;
+        } catch ( Exception se) {
+            throw new javax.servlet.ServletException( "XMLDispatcher throws Exception in processWriteAction (DataSet: " + dataset + "; method: " + method + "; " + se ) ;
         }
         return false ;
     }
@@ -3183,12 +3162,7 @@ public class XMLDispatcher {
                 String secRefSessionListName = (String)((Vector)uso.xmlDataAccess.getElementsByName( "secondary-ref-list,session-list-name" , storeNode ) ).get( 0 ) ;
                 HashMap secParamMap = new HashMap() ;
                 secParamMap = uso.sharedMethods.getParams( secondaryKey , uso ) ;
-                // get data:
-                try {
-                    uso.dbMapper.DBAction( secRefDataset , secRefMethod , secParamMap ) ;
-                } catch ( java.sql.SQLException sqle ) {
-                    throw new javax.servlet.ServletException( "XMLDispatcher throws exception in -processStoreActions- while processing an update of the Secondary Key List:" + sqle ) ;
-                }
+                uso.dbMapper.DBAction( secRefDataset , secRefMethod , secParamMap ) ;
                 Vector sessionListEntry = new Vector() ;
                 String sessionRefEntry = "" ;
                 if ( uso.dbMapper.size() > 0 ) {
@@ -3495,10 +3469,14 @@ public class XMLDispatcher {
     protected void xmlModuleProcessing_Store( HttpServletRequest request , HttpServletResponse response , NodeList xmlModuleNode , UserScopeObject uso ) throws javax.servlet.ServletException , org.xml.sax.SAXException , java.io.IOException {
         // 0. check permissions
         boolean storeException = false ;
-        // Hier muss die Core-Exception auch zurückgesetzt werden,
-        // da ansonsten eine Exception aus dem normalen Read-Out (show)
-        // noch vorhanden sein kann.
-        uso.dbMapper.resetException() ;
+        try {
+            // Hier muss die Core-Exception auch zurückgesetzt werden,
+            // da ansonsten eine Exception aus dem normalen Read-Out (show)
+            // noch vorhanden sein kann.
+            uso.dbMapper.resetException() ;
+        } catch (Exception ex) {
+            throw new javax.servlet.ServletException( "XMLDispatcher throws Exception in xmlModuleProcessing_Store " + ex ) ;
+        }
         Vector rolePermissions = new Vector() ;
         rolePermissions = uso.xmlDataAccess.getElementsByName( "role-name" , xmlModuleNode ) ;
         this.checkPermissions( rolePermissions , uso ) ;
@@ -3528,9 +3506,13 @@ public class XMLDispatcher {
                 break;
             }
         }
-        // wenn hier nicht resetException gemacht wird, bleibt diese stehen
-        // aus Lesbarkeitsgründen ist diese resetException auch in Store drin.
-        uso.dbMapper.resetException() ;
+        try {
+            // wenn hier nicht resetException gemacht wird, bleibt diese stehen
+            // aus Lesbarkeitsgründen ist diese resetException auch in Store drin.
+            uso.dbMapper.resetException() ;
+        } catch (Exception ex) {
+            throw new javax.servlet.ServletException( "XMLDispatcher throws SQLException in xmlModuleProcessing_Store: " + ex ) ;
+        }
         // last but not lease: dispatch to new module
         if ( storeException == false ) {
             String url = "";
@@ -3546,8 +3528,7 @@ public class XMLDispatcher {
     
     private String encryptString( String encryptString ) throws java.lang.Exception {
         encryptString = new String( encrypt( encryptString ) ) ;
-        BASE64Encoder encoder = new BASE64Encoder();
-        encryptString = encoder.encode( encryptString.getBytes() ) ;
+        encryptString = javax.xml.bind.DatatypeConverter.printBase64Binary(encryptString.getBytes());
         return encryptString ;
     }
     
@@ -3561,7 +3542,7 @@ public class XMLDispatcher {
     
     // Helper-Function : Stephan
     private String replaceAll( String s, String search, String replace ) {
-        StringBuffer s2 = new StringBuffer();
+        StringBuilder s2 = new StringBuilder();
         int i = 0, j = 0;
         int len = search.length();
         
@@ -3584,11 +3565,7 @@ public class XMLDispatcher {
         if( strValue.trim().length() == 10 ){
             Pattern p = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
             Matcher m = p.matcher( strValue.trim() );
-            if( m.find() ){
-                return true;
-            }else{
-                return false;
-            }
+            return m.find();
         }else{
             return false;
         }
@@ -3599,11 +3576,7 @@ public class XMLDispatcher {
         if( strValue.trim().length() == 10 ){
             Pattern p = Pattern.compile("\\d{2}\\.\\d{2}\\.\\d{4}");
             Matcher m = p.matcher( strValue.trim() );
-            if( m.find() ){
-                return true;
-            }else{
-                return false;
-            }
+            return m.find();
         }else{
             return false;
         }
@@ -3614,11 +3587,7 @@ public class XMLDispatcher {
         if(strValue.trim().length() == 12){
             Pattern p = Pattern.compile("(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\\d{2}), (19|20)[0-9]{2}");
             Matcher m = p.matcher(strValue.trim());
-            if(m.find()){
-                return true;
-            } else {
-                return false;
-            }
+            return m.find();
         } else {
             return false;
         }
@@ -3628,11 +3597,7 @@ public class XMLDispatcher {
         if(strValue.trim().length() == 12){
             Pattern p = Pattern.compile("(\\d(2))\\.(\\d{2})\\.(19|20)[0-9]{2}");
             Matcher m = p.matcher(strValue.trim());
-            if(m.find()){
-                return true;
-            } else {
-                return false;
-            }
+            return m.find();
         } else {
             return false;
         }

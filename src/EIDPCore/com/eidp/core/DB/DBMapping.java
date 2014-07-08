@@ -22,9 +22,7 @@ import java.sql.SQLException;
 import org.w3c.dom.NodeList;
 import javax.servlet.http.HttpSessionListener ;
 import javax.servlet.http.HttpSessionEvent ;
-import sun.misc.BASE64Encoder;
 import java.util.Date ;
-import javax.ejb.CreateException;
 import javax.ejb.Remote;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
@@ -80,7 +78,8 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
     private final FileHandler fh = null ;
     private final int LOGIN_TIMEOUT = 120000 ;
     
-    public void setApplicationContext(String applicationContext) throws IOException, CreateException {
+    @Override
+    public void setApplicationContext(String applicationContext) throws IOException {
         this.applicationContext = applicationContext;
                 this.logger = Logger.getLogger("com.eidp.core.DB.DBMapping."+this.applicationContext+"."+this.context.hashCode());
         // this.fh = new FileHandler("/com/eidp/logs/core/Core."+this.applicationContext+"."+this.context.hashCode()+".log");
@@ -171,25 +170,25 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
             this.logger.info("DBMapping: Datasource information retrieval finished.");
         } catch ( org.xml.sax.SAXException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: SAXException thrown in DBMapping.applicationInit: {0}", e);
-            throw new javax.ejb.CreateException( "DataNodeVector could not be created: " + e ) ;
+            throw new javax.ejb.EJBException( "DataNodeVector could not be created: " + e ) ;
         } catch ( javax.xml.parsers.ParserConfigurationException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: CreateException thrown in DBMapping.applicationInit: {0}", e);
-            throw new javax.ejb.CreateException( "DataNodeVector could not be created: " + e ) ;
+            throw new javax.ejb.EJBException( "DataNodeVector could not be created: " + e ) ;
         } catch ( java.lang.ClassNotFoundException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: ClassNotFoundException thrown in DBMapping.applicationInit: {0}", e);
-            throw new javax.ejb.CreateException( "Class not found at application init: " + e ) ;
+            throw new javax.ejb.EJBException( "Class not found at application init: " + e ) ;
         } catch ( java.lang.NoSuchMethodException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: NoSuchMethodException thrown in DBMapping.applicationInit: {0}", e);
-            throw new javax.ejb.CreateException( "No Such Method Exception at application init: " + e ) ;
+            throw new javax.ejb.EJBException( "No Such Method Exception at application init: " + e ) ;
         } catch ( java.lang.InstantiationException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: InstantiationException thrown in DBMapping.applicationInit: {0}", e);
-            throw new javax.ejb.CreateException( "Instantiation Exception at application init: " + e ) ;
+            throw new javax.ejb.EJBException( "Instantiation Exception at application init: " + e ) ;
         } catch ( java.lang.IllegalAccessException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: IllegalAccessException thrown in DBMapping.applicationInit: {0}", e);
-            throw new javax.ejb.CreateException( "Illegal Access Exception at application init: " + e ) ;
+            throw new javax.ejb.EJBException( "Illegal Access Exception at application init: " + e ) ;
         } catch ( java.lang.reflect.InvocationTargetException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: InvocationTargetException thrown in DBMapping.applicationInit: {0}", e.getTargetException());
-            throw new javax.ejb.CreateException( "Invocation Target Exception at application init: " + e.getTargetException() ) ;
+            throw new javax.ejb.EJBException( "Invocation Target Exception at application init: " + e.getTargetException() ) ;
         }
     }
     
@@ -208,7 +207,8 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
      * @throws SAXException
      * @throws IOException
      */
-    public void DBAction(String dataset, String method, HashMap paramMap) throws java.rmi.RemoteException , org.xml.sax.SAXException, java.io.IOException, java.sql.SQLException {
+    @Override
+    public void DBAction(String dataset, String method, HashMap paramMap) throws org.xml.sax.SAXException {
         this.logger.info("DBMapping: >>> DBMapping.DBAction called.");
         // ======
         // DBAction gets the dataSetNode and the methodNode for the specified dataSet and method
@@ -268,7 +268,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
             Vector nameDataSet = this.xmlDataAccess.getElementsByName( "name" , (NodeList)methodVector.get(m_i) ) ;
             if ( nameDataSet.isEmpty() ) {
                 this.logger.severe("DBMapping: No method name given.");
-                throw new java.rmi.RemoteException("No method given in db.xml");
+                throw new javax.ejb.EJBException("No method given in db.xml");
             }
             if ( ((String)nameDataSet.get(0)).equals( method ) ) {
                 methodNode = (NodeList)methodVector.get(m_i) ;
@@ -310,13 +310,13 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
             Object result = callMethod.invoke( (Object)this.dataSourceObjects.get( dataSourceID ) , paramObjects );
         } catch ( java.lang.NoSuchMethodException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: NoSuchMethodException in DBAction: {0}", e);
-            throw new java.rmi.RemoteException( "EIDP Core System ProcessDBAction: " + e ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System ProcessDBAction: " + e ) ;
         } catch ( java.lang.IllegalAccessException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: IllegalAccessException in DBAction: {0}", e);
-            throw new java.rmi.RemoteException( "EIDP Core System ProcessDBAction: " + e ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System ProcessDBAction: " + e ) ;
         } catch ( java.lang.reflect.InvocationTargetException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: InvocationTargetException in DBAction: {0}", e.getTargetException());
-            throw new java.rmi.RemoteException( "EIDP Core System ProcessDBAction: " + e.getTargetException() ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System ProcessDBAction: " + e.getTargetException() ) ;
         }
         this.dataSourceIDCache = dataSourceID ;
     }
@@ -327,7 +327,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
      * @return HashMap of the requested row in the ResultSet.
      */
     @Override
-    public HashMap getRow( int rowNumber ) throws java.rmi.RemoteException {
+    public HashMap getRow( int rowNumber ) {
         this.logger.finest("DBMapping: >>> DBMapping.getRow( int ) called.");
         Object result = null ;
         try {
@@ -337,13 +337,13 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
             result = callMethod.invoke( (Object)this.dataSourceObjects.get( this.dataSourceIDCache ) , paramObjects );
         } catch ( java.lang.NoSuchMethodException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: NoSuchMethodException in getRow: {0}", e);
-            throw new java.rmi.RemoteException( "EIDP Core System getRow: " + e ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System getRow: " + e ) ;
         } catch ( java.lang.IllegalAccessException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: IllegalAccessException in getRow: {0}", e);
-            throw new java.rmi.RemoteException( "EIDP Core System getRow: " + e ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System getRow: " + e ) ;
         } catch ( java.lang.reflect.InvocationTargetException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: InvocationTargetException in getRow: {0}", e.getTargetException());
-            throw new java.rmi.RemoteException( "EIDP Core System getRow: " + e.getTargetException() ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System getRow: " + e.getTargetException() ) ;
         }
         return (HashMap)result ;
     }
@@ -355,7 +355,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
      * @return Vector of Hashes.
      */
     @Override
-    public Vector getRowRange( int rowNumber , int endRow ) throws java.rmi.RemoteException {
+    public Vector getRowRange( int rowNumber , int endRow ) {
         this.logger.finest("DBMapping: >>> DBMapping.getRowRange( int , int ) called.");
         Object result = null ;
         try {
@@ -365,13 +365,13 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
             result = callMethod.invoke( (Object)this.dataSourceObjects.get( this.dataSourceIDCache ) , paramObjects );
         } catch ( java.lang.NoSuchMethodException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: NoSuchMethodException in getRow: {0}", e);
-            throw new java.rmi.RemoteException( "EIDP Core System getRowRange: " + e ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System getRowRange: " + e ) ;
         } catch ( java.lang.IllegalAccessException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: IllegalAccessException in getRow: {0}", e);
-            throw new java.rmi.RemoteException( "EIDP Core System getRowRange: " + e ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System getRowRange: " + e ) ;
         } catch ( java.lang.reflect.InvocationTargetException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: InvocationTargetException in getRow: {0}", e.getTargetException());
-            throw new java.rmi.RemoteException( "EIDP Core System getRow: " + e.getTargetException() ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System getRow: " + e.getTargetException() ) ;
         }
         return (Vector)result ;
     }
@@ -381,7 +381,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
      * @return Returns an int for the size of the ResultSet.
      */
     @Override
-    public int size() throws java.rmi.RemoteException {
+    public int size() {
         this.logger.finest("DBMapping: >>> DBMapping.size() called.");
         Object result = null ;
         try {
@@ -391,19 +391,19 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
             result = callMethod.invoke( (Object)this.dataSourceObjects.get( this.dataSourceIDCache ) , paramObjects );
         } catch ( java.lang.NoSuchMethodException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: NoSuchMethodException in getRow: {0}", e);
-            throw new java.rmi.RemoteException( "EIDP Core System size: " + e ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System size: " + e ) ;
         } catch ( java.lang.IllegalAccessException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: IllegalAccessException in getRow: {0}", e);
-            throw new java.rmi.RemoteException( "EIDP Core System size: " + e ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System size: " + e ) ;
         } catch ( java.lang.reflect.InvocationTargetException e ) {
             this.logger.log(Level.SEVERE, "DBMapping: InvocationTargetException in getRow: {0}", e.getTargetException());
-            throw new java.rmi.RemoteException( "EIDP Core System size: " + e.getTargetException() ) ;
+            throw new javax.ejb.EJBException( "EIDP Core System size: " + e.getTargetException() ) ;
         }
         return ((Integer)result).intValue() ;
     }
     
     @Override
-    public HashMap Authenticate( String TW_PRINCIPAL , String TW_CREDENTIALS ) throws java.rmi.RemoteException {
+    public HashMap Authenticate( String TW_PRINCIPAL , String TW_CREDENTIALS ) {
         this.logger.info("DBMapping: >>> DBMapping.Authenticate().");
         this.logger.log(Level.FINE, "DBMapping: CALL Parameters: PRINCIPAL = {0}; CREDENTIALS=---HIDDEN---", TW_PRINCIPAL);
         HashMap returnAuthData = new HashMap() ;
@@ -412,7 +412,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
         this.logger.fine("DBMapping: Calling USERS.getUserDataForLogin.");
         try {
             this.DBAction( "USERS" , "getUserDataForLogin" , paramMap ) ;
-        } catch (SAXException | IOException | SQLException ex) {
+        } catch (SAXException ex) {
             this.logger.log(Level.SEVERE, "DBMapping: Exception in Authenticate.getUserDataForLogin: {0}", ex);
         } 
         if ( this.size() > 0 ) {
@@ -440,8 +440,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
                 } catch (DigestException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IOException | ServletException ex) {
                     this.logger.log(Level.SEVERE, "DBMapping: Exception in Authenticate.encrypt: {0}", ex);
                 }
-                BASE64Encoder encoder = new BASE64Encoder() ;
-                userInputPassword = encoder.encode( userInputPassword.getBytes() ).toString() ;
+                userInputPassword = javax.xml.bind.DatatypeConverter.printBase64Binary(userInputPassword.getBytes());
             }
             this.logger.fine("DBMapping: Checking passwords.");
             if(errorNumber < 4 || errorDateTimeStamp.before(dateTimestamp)){
@@ -450,7 +449,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
                     paramMap.put( "login_err_timestamp" , String.valueOf(dateTimestamp.getTime()) ) ;
                     try {
                         this.DBAction( "USERS" , "setLoginError" , paramMap ) ;
-                    } catch (SAXException | IOException | SQLException ex) {
+                    } catch (SAXException ex) {
                         this.logger.log(Level.SEVERE, "DBMapping: Exception in Authenticate.setLoginError: {0}", ex);
                     }
                     errorNumber = 0;
@@ -485,7 +484,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
                     this.logger.fine("DBMapping: Calling ROLES.getRolesForLogin");
                     try {
                         this.DBAction( "ROLES" , "getRolesForLogin" , paramMap ) ;
-                    } catch (SAXException | IOException | SQLException ex) {
+                    } catch (SAXException ex) {
                         this.logger.log(Level.SEVERE, "DBMapping: Exception in Authenticate.getRolesForLogin: {0}", ex);
                     }
                     if ( this.size() == 0 ) {
@@ -508,7 +507,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
                     this.logger.fine("DBMapping: Calling CENTER_ROLES.getCentersForUser");
                     try {
                         this.DBAction( "CENTER_ROLES" , "getCentersForUser" , paramMap ) ;
-                    } catch (SAXException | IOException | SQLException ex) {
+                    } catch (SAXException ex) {
                         this.logger.log(Level.SEVERE, "DBMapping: Exception in Authenticate.getCentersForUser: {0}", ex);
                     }
                     if ( this.size() == 0 ) {
@@ -555,20 +554,20 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
                             }
                         } catch ( java.lang.NoSuchMethodException e ) {
                             this.logger.log(Level.SEVERE, "DBMapping: NoSuchMethodException in DBMapping.Authenticate(): {0}", e);
-                            throw new java.rmi.RemoteException( "EIDP Core System ProcessDBAction: " + e ) ;
+                            throw new javax.ejb.EJBException( "EIDP Core System ProcessDBAction: " + e ) ;
                         } catch ( java.lang.IllegalAccessException e ) {
                             this.logger.log(Level.SEVERE, "DBMapping: IllegalAccessException in DBMapping.Authenticate(): {0}", e);
-                            throw new java.rmi.RemoteException( "EIDP Core System ProcessDBAction: " + e ) ;
+                            throw new javax.ejb.EJBException( "EIDP Core System ProcessDBAction: " + e ) ;
                         } catch ( java.lang.reflect.InvocationTargetException e ) {
                             this.logger.log(Level.SEVERE, "DBMapping: InvocationTargetException in DBMapping.Authenticate(): {0}", e.getTargetException());
-                            throw new java.rmi.RemoteException( "EIDP Core System ProcessDBAction: " + e.getTargetException() ) ;
+                            throw new javax.ejb.EJBException( "EIDP Core System ProcessDBAction: " + e.getTargetException() ) ;
                         }   
                     }
                     paramMap.put( "login_err_number" , "0" ) ;
                     paramMap.put( "login_err_timestamp" , String.valueOf(dateTimestamp.getTime()) ) ;
                     try {
                         this.DBAction( "USERS" , "setLoginError" , paramMap ) ;
-                    } catch (SAXException | IOException | SQLException ex) {
+                    } catch (SAXException ex) {
                         this.logger.log(Level.SEVERE, "DBMapping: Exception in Authenticate.setLoginError: {0}", ex);
                     }
                     return returnAuthData ;
@@ -579,7 +578,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
                     this.logger.log(Level.FINE, "Wrong password. Parameters{0}", paramMap.toString());
                     try {
                         this.DBAction( "USERS" , "setLoginError" , paramMap ) ;
-                    } catch (SAXException | IOException | SQLException ex) {
+                    } catch (SAXException ex) {
                         this.logger.log(Level.SEVERE, "DBMapping: Exception in Authenticate.setLoginError: {0}", ex);
                     }
                     this.SSO_AUTH = false ;
@@ -606,7 +605,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
     }
     
     @Override
-    public boolean isAuthenticated() throws java.rmi.RemoteException {
+    public boolean isAuthenticated() {
         return this.SSO_AUTH ;
     }
     

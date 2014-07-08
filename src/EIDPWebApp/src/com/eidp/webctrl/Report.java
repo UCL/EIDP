@@ -6,47 +6,28 @@
 
 package com.eidp.webctrl;
 
-import com.eidp.core.DB.DBMappingHomeRemote;
-import com.eidp.core.DB.DBMappingRemote;
 import com.eidp.Generator.RTFGenerator ;
-
 import java.io.PrintWriter;
-
 import com.eidp.xml.XMLDataAccess;
-import com.eidp.logger.Logger;
 import com.eidp.UserScopeObject.UserScopeObject ;
+import com.eidp.core.DB.DBMapping;
 import com.eidp.webctrl.modules.Report.*;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletOutputStream;
-import javax.ejb.Handle ;
-
 import org.w3c.dom.* ;
 import org.apache.soap.util.xml.DOM2Writer ;
-import javax.xml.parsers.* ;
-
 import java.io.File ;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.StringWriter ;
 import java.util.HashMap ;
 import java.util.Vector ;
-import java.util.Set ;
-import java.util.Iterator ;
 import java.util.Properties;
-
 import javax.naming.Context ;
 import javax.naming.InitialContext ;
-import javax.rmi.PortableRemoteObject ;
-
 import javax.transaction.UserTransaction ;
 
 import java.util.Date ;
-import com.eidp.webctrl.modules.Hilf;
 
 /**
  *
@@ -96,17 +77,14 @@ public class Report {
         uso.userCenter = (String)uso.eidpWebAppCache.sessionData_get( "userCenter" ) ;
         // uso.dbMapper = (DBMappingRemote)((Handle)uso.session.getAttribute( "dbMapperHandle" )).getEJBObject() ;
         
-        DBMappingRemote dbMapper = null ;
+        DBMapping dbMapper = null ;
         try {
             Properties prop = new Properties() ;
 //            prop.setProperty( "org.omg.CORBA.ORBInitialHost" , "localhost" ) ;
 //            prop.setProperty( "org.omg.CORBA.ORBInitialPort" , "33365" ) ;
             Context jndiContext = new InitialContext( prop ) ;
-            Object ref = jndiContext.lookup("DBMapping") ;
-            DBMappingHomeRemote home = (DBMappingHomeRemote) PortableRemoteObject.narrow(ref, DBMappingHomeRemote.class) ;
-            dbMapper = home.create( uso.applicationContext ) ;
-        } catch ( javax.ejb.CreateException e ) {
-            throw new javax.servlet.ServletException( "" + e ) ;
+            dbMapper = (DBMapping) jndiContext.lookup("DBMapping");
+            dbMapper.setApplicationContext(uso.applicationContext);
         } catch ( javax.naming.NamingException e ) {
             throw new javax.servlet.ServletException( "" + e ) ;
         }

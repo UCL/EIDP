@@ -7,7 +7,6 @@
 package com.eidp.core.DB;
 
 import java.io.IOException;
-import javax.ejb.EJBObject;
 import java.util.Vector;
 import java.util.HashMap;
 import javax.ejb.CreateException;
@@ -49,44 +48,38 @@ public interface DBMappingRemote {
      * @param dataset the name of the dataset to be processed
      * @param method the name of the method within dataset to be processed
      * @param paramMap the parameters given
-     * @throws IOException
-     * @throws RemoteException
-     * @throws SQLException
-     * @throws SAXException throws SAXException
+     * @throws org.xml.sax.SAXException
      */
-    public void DBAction( String dataset , String method , HashMap paramMap ) throws java.rmi.RemoteException, java.sql.SQLException , org.xml.sax.SAXException , java.io.IOException ;
+    public void DBAction( String dataset , String method , HashMap paramMap ) throws org.xml.sax.SAXException ;
     
     /**
      * Returns data in form of a HashMap kept by the given rowNumber. The keys are ids
      * and not columnnames.
      * @param rowNumber specifies the rowNumber to be retrieved
      * @return the HashMap that is keeped by the specified rowNumber
-     * @throws RemoteException
      */
-    public HashMap getRow( int rowNumber ) throws java.rmi.RemoteException ;
+    public HashMap getRow( int rowNumber );
     
     /**
      * Returns a vector that holds the data in the requested range. Data is represented
      * as HashMaps. The keys are ids, not columnnames.
      * @param rowNumber retrieve data from this rowNumber
      * @param endRowNumber retrieve data until this endRowNumber
-     * @throws RemoteException
      * @return a vector that consists of the requested data (HashMaps)
      */
-    public Vector getRowRange( int rowNumber , int endRowNumber ) throws java.rmi.RemoteException ;
+    public Vector getRowRange( int rowNumber , int endRowNumber );
     
     /**
      * Returns the size of the result set Vector.
      * @return size of the result set vector
-     * @throws RemoteException
      */
-    public int size() throws java.rmi.RemoteException ;
+    public int size();
     
-    public HashMap Authenticate( String TW_PRINCIPAL , String TW_CREDENTIALS ) throws java.rmi.RemoteException ;
+    public HashMap Authenticate( String TW_PRINCIPAL , String TW_CREDENTIALS ) ;
     
-    public boolean isAuthenticated() throws java.rmi.RemoteException ;
+    public boolean isAuthenticated() ;
     
-    public void setApplicationContext(String applicationContext) throws IOException, CreateException;
+    public void setApplicationContext(String applicationContext) throws IOException;
 
     public void resetException() throws Exception;
 
