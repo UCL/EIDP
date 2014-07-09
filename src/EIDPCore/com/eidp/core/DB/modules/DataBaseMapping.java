@@ -247,7 +247,7 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
                 } else {
                     forValue = "(" + (String)paramMap.get( (String)forFieldIDs.get(f_i) ) + ")" ;
                 }
-            } else if ( forOperator.equals("gt") || forOperator.equals("get") || forOperator.equals("lt") || forOperator.equals("let") || forOperator.equals("equal") || forOperator.equals("notequal") || forOperator.equals("like") || forOperator.equals("isnull") || forOperator.equals("isnotnull") ) {
+            } else if ( forOperator.equals("gt") || forOperator.equals("get") || forOperator.equals("lt") || forOperator.equals("let") || forOperator.equals("equal") || forOperator.equals("notequal") || forOperator.equals("like") || forOperator.equals("isnull") || forOperator.equals("isnotnull") || forOperator.equals("similarto") || forOperator.equals("fuzzy") ) {
                 String origForValue = (String)paramMap.get( (String)forFieldIDs.get(f_i) ) ;
                 boolean isLike = false ;
                 if ( forOperator.equals("gt") ) { forOperator = " > " ;} else if (forOperator.equals("get") ) { forOperator = " >= " ; } else if ( forOperator.equals("lt") ) { forOperator = " < " ; } else if ( forOperator.equals("let") ) { forOperator = " <= " ; } else if ( forOperator.equals("equal") ) { forOperator = " = " ; } else if ( forOperator.equals("notequal") ) { forOperator = " != " ; } else if ( forOperator.equals("like") ) {
@@ -277,6 +277,26 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
                 }else if ( forOperator.equals("isnotnull") ) {
                     forOperator = " is null" ;
                     forKey = "not " + forKey;
+                }else if ( forOperator.equals("similarto") ) {
+                    forOperator = " similar to ";
+                    Vector searchType = (Vector)this.xmlDataAccess.getElementsByName( "for,easysearch" , methodNode ) ;
+                    Vector searchCaseSen = (Vector)this.xmlDataAccess.getElementsByName( "for,case" , methodNode ) ;
+                    if( searchType.size() > 0 ){
+                        String strEasySearch = (String)searchType.get( 0 );
+                        if(strEasySearch.equals("true")){
+                            origForValue = "%" + origForValue + "%" ;
+                        }
+                    }
+                    if( searchCaseSen.size() > 0 ){
+                            String strCaseSensitivity = (String)searchCaseSen.get( 0 ) ;;
+                            if(strCaseSensitivity.equals("upper")){
+                                origForValue = origForValue.toUpperCase() ;
+                            }else if(strCaseSensitivity.equals("lower")){
+                                origForValue = origForValue.toLowerCase() ;
+                            }
+                        }
+                }else if ( forOperator.equals("fuzzy")) {
+                    forOperator = " % ";
                 }
                 if ( isLike == false ) {
                     forValue = origForValue ;

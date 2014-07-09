@@ -103,10 +103,8 @@
     <target name="resolve" depends="init-ivy" description="--> retrieve dependencies with ivy">
         <ivy:settings file="ivy-settings.xml" />
         <ivy:resolve />
-	<!--
-	<ivy:report todir="build/ivy-report" graph="false"/>
-	-->
 	<ivy:retrieve conf="test,default"/>
+	<ivy:cachepath pathid="test.classpath" conf="test" />
     </target>
     <target name="init-testng" depends="resolve" description="--> configure testng Ant task">
       <taskdef resource="testngtasks" classpathref="test.classpath"/>
@@ -261,7 +259,6 @@
                 <include name="EIDPCore.jar"/>
                 <include name="EIDPWebAppCache.jar"/>
                 <include name="EIDPWebApp.war"/>
-                <include name="EIDPServices.war"/>
             </fileset>
         </copy>
         <copy filtering="false" file="${coreapp}/META-INF/coreapp-application.xml" tofile="${EIDPDataNode}/META-INF/application.xml" overwrite="true"/>
@@ -282,6 +279,7 @@
 	  <path refid="test.classpath"/>
 	</classpath>
       </javac>
+      <javac destdir="test/classes" srcdir="test/EIDPCore" classpathref="test.classpath"/>
     </target>
 
     <target depends="test-compile,EIDPWebAppCache_Dist" name="test" description="--> run TestNG tests">
