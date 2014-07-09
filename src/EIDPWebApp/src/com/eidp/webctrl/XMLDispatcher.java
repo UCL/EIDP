@@ -6,7 +6,7 @@
 
 package com.eidp.webctrl;
 
-import com.eidp.core.DB.DBMapping;
+import com.eidp.core.DB.DBMappingRemote;
 import java.io.IOException;
 import java.io.PrintWriter;
 import com.eidp.webctrl.modules.EIDPAddInLoader;
@@ -90,7 +90,7 @@ public class XMLDispatcher {
         //        uso.userRoles = (Vector)uso.session.getAttribute( "userRoles" ) ;
         //        uso.centerRoles = (HashMap)uso.session.getAttribute( "centerRoles" ) ;
         //synchronized( this.session.getId() ) {
-        uso.dbMapper = (DBMapping)uso.session.getAttribute( "dbMapperHandle" ) ;
+        uso.dbMapper = (DBMappingRemote)uso.session.getAttribute( "dbMapperHandle" ) ;
         // this.dbMapper.applicationConnect( this.applicationContext ) ;
         //}
         // get controller.xml
