@@ -9,7 +9,6 @@ package com.eidp.core.DB;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.HashMap;
-import javax.ejb.CreateException;
 import javax.ejb.Remote;
 
 /**

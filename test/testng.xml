@@ -6,4 +6,10 @@
        <class name="com.eidp.webctrl.WebAppCache.WebAppCacheNGTest" />
     </classes>
   </test>
+  <test name="eidpCoreNGTests" >
+    <classes>
+       <class name="com.eidp.core.DB.modules.DatabaseMappingNGTest" />
+       <class name="com.eidp.core.DB.modules.DataSourceDispatcherNGTest" />
+    </classes>
+  </test>
  </suite>

@@ -3,6 +3,7 @@ package com.eidp.core.DB.modules;
 import com.eidp.core.DB.DBMappingRemote;
 import com.eidp.xml.XMLDataAccess ;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
@@ -47,12 +48,28 @@ public class DataSourceDispatcher extends DataSourceMapping implements DataSourc
         this.xmlDataAccess = xmlda ;
         String ejbReference = (String) ( (Vector)xmlda.getElementsByName( "ejb-ref" , dataSourceNode ) ).get( 0 ) ;
         String contextToCall = (String) ( (Vector)xmlda.getElementsByName( "context" , dataSourceNode )).get(0);
+        String id = (String) ( (Vector)xmlda.getElementsByName( "context" , dataSourceNode )).get(0);
+        // Defaults to lowercase ID
+        String propertiesFile = id.toLowerCase() + ".properties";
+        Vector properties = (Vector) xmlda.getElementsByName("properties", dataSourceNode);
+        if (!properties.isEmpty()) {
+            propertiesFile = (String) properties.get(0);
+        }
+        InputStream propsInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesFile);
         logger.log(Level.INFO, "DataSourceDispatcher: Instantiating with parameters: ejb-ref={0} contextToCall: {1}", new Object[]{ejbReference, contextToCall});
         try {
-            logger.log(Level.INFO, "DataSourceDispatcher: looking up remote DBMapping ({0}): {1}", new Object[]{ejbReference, contextToCall});            
-            Properties prop = new Properties();
-            Context jndiContext = new InitialContext() ;
-            logger.fine("DataSourceDispatcher: DBMapping object reference obtained");
+            logger.log(Level.INFO, "DataSourceDispatcher: looking up remote DBMapping ({0}): {1}", new Object[]{ejbReference, contextToCall});
+            Context jndiContext;
+            if (null == propsInputStream) {
+                logger.log(Level.INFO, "DataSourceDispatcher: No properties file found in classpath, using empty InitialContext constructor");
+                jndiContext = new InitialContext() ;
+            } else {
+                logger.log(Level.INFO, "DataSourceDispatcher: {0} file found in classpath, using non-empty InitialContext constructor", propertiesFile);
+                Properties prop = new Properties();
+                prop.load(propsInputStream);
+                jndiContext = new InitialContext(prop);
+            }
+            logger.fine("DataSourceDispatcher: JNDI context available");
             logger.fine("DataSourceDispatcher: create dbMapper");
             this.dbMapper = (DBMappingRemote) jndiContext.lookup(ejbReference);
             logger.fine("DataSourceDispatcher: dbMapper created");

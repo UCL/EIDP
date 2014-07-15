@@ -25,9 +25,9 @@ import org.xml.sax.SAXException;
  *
  * @author brit.sysman
  */
-public class DatabaseMappingTestNGTest {
+public class DatabaseMappingNGTest {
     
-    public DatabaseMappingTestNGTest() {
+    public DatabaseMappingNGTest() {
     }
 
     @Test

@@ -284,7 +284,7 @@
 
     <target depends="test-compile,EIDPWebAppCache_Dist" name="test" description="--> run TestNG tests">
     	<echo>Apache Ant test task required by Travis CI</echo>
-	<testng classpath="test/classes;lib/testng-6.8.jar;lib/jcommander-1.27.jar;lib/glassfish-embedded-all-3.1.2.jar;dist/EIDPLib.jar;build/EIDPWebAppCache" outputdir="test/report">
+	<testng classpath="test/resources/META-INF;test/classes;lib/testng-6.8.jar;lib/jcommander-1.27.jar;lib/glassfish-embedded-all-3.1.2.jar;dist/EIDPLib.jar;build/EIDPWebAppCache" outputdir="test/report">
 	  <xmlfileset dir="test" includes="testng.xml"/>
 	</testng>
     </target>
