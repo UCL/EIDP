@@ -48,15 +48,15 @@ public class DataSourceDispatcher extends DataSourceMapping implements DataSourc
         this.xmlDataAccess = xmlda ;
         String ejbReference = (String) ( (Vector)xmlda.getElementsByName( "ejb-ref" , dataSourceNode ) ).get( 0 ) ;
         String contextToCall = (String) ( (Vector)xmlda.getElementsByName( "context" , dataSourceNode )).get(0);
-        String id = (String) ( (Vector)xmlda.getElementsByName( "context" , dataSourceNode )).get(0);
+        String id = (String) ( (Vector)xmlda.getElementsByName( "id" , dataSourceNode )).get(0);
         // Defaults to lowercase ID
-        String propertiesFile = id.toLowerCase() + ".properties";
+        String propertiesFile = "META-INF/" + id.toLowerCase() + ".properties";
         Vector properties = (Vector) xmlda.getElementsByName("properties", dataSourceNode);
         if (!properties.isEmpty()) {
             propertiesFile = (String) properties.get(0);
         }
-        InputStream propsInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesFile);
-        logger.log(Level.INFO, "DataSourceDispatcher: Instantiating with parameters: ejb-ref={0} contextToCall: {1}", new Object[]{ejbReference, contextToCall});
+        InputStream propsInputStream = this.getClass().getClassLoader().getResourceAsStream(propertiesFile);
+        logger.log(Level.INFO, "DataSourceDispatcher: Instantiating with parameters: ejb-ref={0} contextToCall: {1} properties: {2}", new Object[]{ejbReference, contextToCall, propertiesFile});
         try {
             logger.log(Level.INFO, "DataSourceDispatcher: looking up remote DBMapping ({0}): {1}", new Object[]{ejbReference, contextToCall});
             Context jndiContext;
