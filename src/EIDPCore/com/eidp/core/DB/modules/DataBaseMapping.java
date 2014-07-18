@@ -78,13 +78,17 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
             this.database.put( "instance-name" , (Vector)this.xmlDataAccess.getElementsByName( "instance-name" , dataSourceNode ) );
             this.database.put( "user" , (Vector)this.xmlDataAccess.getElementsByName( "user" , dataSourceNode ) );
             this.database.put( "password" , (Vector)this.xmlDataAccess.getElementsByName( "password" , dataSourceNode ) );
-            logger.fine("DataBaseMapping: Parameters retrieved for connection: "+this.database.toString());
+            Vector additionalParameters = (Vector)this.xmlDataAccess.getElementsByName("additional-parameters", dataSourceNode);
+            if (additionalParameters.size() > 0) {
+                this.database.put("additional-parameters", (String)additionalParameters.get(0));
+            }
+            logger.log(Level.FINE, "DataBaseMapping: Parameters retrieved for connection: {0}", this.database.toString());
             this.getConnection(logger);
         } else if ( this.dbType.equals( "Pool" ) ) {
             logger.fine("DataBaseMapping: Trying to get POOL connection.");
             this.database.put( "jndi-datasource" , (String)((Vector)this.xmlDataAccess.getElementsByName( "jndi-datasource" , dataSourceNode )).get( 0 ) ) ;
             this.database.put( "jndi-transaction" , (String)((Vector)this.xmlDataAccess.getElementsByName( "jndi-transaction" , dataSourceNode )).get( 0 ) ) ;
-            logger.fine("DataBaseMapping: Parameters retrieved for connection: "+this.database.toString());
+            logger.log(Level.FINE, "DataBaseMapping: Parameters retrieved for connection: {0}", this.database.toString());
             this.getConnection(logger) ;
         }
     }
@@ -107,7 +111,7 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
         String methodType = (String)((Vector)this.xmlDataAccess.getElementsByName( "type" , methodNode )).get(0) ;
         String dataSetName = (String)((Vector)this.xmlDataAccess.getElementsByName( "name" , dataSetNode )).get(0) ;
         String methodName = (String)((Vector)this.xmlDataAccess.getElementsByName( "name" , methodNode )).get(0) ;
-        logger.fine( "DataBaseMapping: Dataset: " + dataSetName + "; Method: " + methodName + " Method-Type: "+methodType+"; ParamMap: " + paramMap.toString() ) ;
+        logger.log( Level.FINE, "DataBaseMapping: Dataset: {0}; Method: {1} Method-Type: {2}; ParamMap: {3}", new Object[]{dataSetName, methodName, methodType, paramMap.toString()}) ;
         // process the specific methods for type:
         if ( methodType.equals( "get" ) ) this.get( tableName , dataSetNode , methodNode , paramMap , logger );
         else if ( methodType.equals( "set" ) ) this.set( tableName , dataSetNode , methodNode , paramMap , logger );
@@ -120,7 +124,11 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
             Vector driver = (Vector)this.database.get("driver") ;
             Vector host = (Vector)( this.database.get( "host" ) ) ;
             Vector instance = (Vector)( this.database.get( "instance-name" ) ) ;
-            String url = (String)host.get(0) + "/" + (String)instance.get(0) ;
+            String additionalParameters = "";
+            if (this.database.containsKey("additional-parameters")) {
+                additionalParameters = "?" + ((String) this.database.get("additional-parameters")).replace("&amp;", "&");
+            }
+            String url = (String)host.get(0) + "/" + (String)instance.get(0) + additionalParameters;
             Vector user = (Vector)( this.database.get( "user" ) ) ;
             Vector password = (Vector)( this.database.get( "password" ) ) ;
             try {
@@ -128,10 +136,10 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
                 this.connection = DriverManager.getConnection( (String)url , (String)user.get(0) , (String)password.get(0) );
                 logger.fine("JDBC Connection created");
             } catch ( java.lang.ClassNotFoundException ce ) {
-                logger.severe("ClassNotFoundException in DatabaseMapping.getConnection: "+ce);
+                logger.log(Level.SEVERE, "ClassNotFoundException in DatabaseMapping.getConnection: {0}", ce);
                 throw new javax.ejb.EJBException(ce);
             } catch ( java.lang.ClassCastException cce ) {
-                logger.severe("ClassCastException in DatabaseMapping.getConnection: "+cce);
+                logger.log(Level.SEVERE, "ClassCastException in DatabaseMapping.getConnection: {0}", cce);
                 throw new javax.ejb.EJBException( "ClassCastException thrown from DBMapping.getConnection: " + cce ) ;
             }
             
@@ -141,7 +149,7 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
                 this.dataSource = (DataSource)cntx.lookup( (String)this.database.get( "jndi-datasource" ) );
                 this.ut = (UserTransaction)cntx.lookup( (String)this.database.get( "jndi-transaction" ) ) ;
             } catch ( javax.naming.NamingException e ) {
-                logger.severe("NamingException in DatabaseMapping.getConnection: "+e);
+                logger.log(Level.SEVERE, "NamingException in DatabaseMapping.getConnection: {0}", e);
                 throw new java.sql.SQLException( "Could not instantiate Connection Pool: " + e ) ;
             }
         }
