@@ -946,6 +946,8 @@ public class XMLDispatcher {
             printWriter.println( " function " + formName + "_" + fieldName + "_setOption( primaryValue , secondaryValue ) { " ) ;
             printWriter.println( "  opener.document." + setFormName + "." + setPrimaryFieldName + ".value = primaryValue ; " ) ;
             printWriter.println( "  opener.document." + setFormName + "." + setSecondaryFieldName + ".value = secondaryValue ; " ) ;
+            printWriter.println( "  opener.document.userChanges=1;") ;
+            printWriter.println( "  opener.document." + setFormName + ".NEW.checked=true;" );
             printWriter.println( "  window.close() ; " ) ;
             printWriter.println( " } " ) ;
             printWriter.println( "</script> " ) ;
