@@ -17,7 +17,7 @@ import java.sql.ResultSet;
 import javax.sql.DataSource;
 import java.sql.Statement;
 
-import javax.transaction.UserTransaction ;
+//import javax.transaction.UserTransaction ;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -55,7 +55,7 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
     private Connection connection = null; // serializable
     
     private DataSource dataSource = null ; // serializable
-    private transient UserTransaction ut = null ; // Serializisation problem!!!
+//    private transient UserTransaction ut = null ; // Serializisation problem!!!
     
     private String dbType = "Jdbc" ; // serializable
     
@@ -87,7 +87,7 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
         } else if ( this.dbType.equals( "Pool" ) ) {
             logger.fine("DataBaseMapping: Trying to get POOL connection.");
             this.database.put( "jndi-datasource" , (String)((Vector)this.xmlDataAccess.getElementsByName( "jndi-datasource" , dataSourceNode )).get( 0 ) ) ;
-            this.database.put( "jndi-transaction" , (String)((Vector)this.xmlDataAccess.getElementsByName( "jndi-transaction" , dataSourceNode )).get( 0 ) ) ;
+//            this.database.put( "jndi-transaction" , (String)((Vector)this.xmlDataAccess.getElementsByName( "jndi-transaction" , dataSourceNode )).get( 0 ) ) ;
             logger.log(Level.FINE, "DataBaseMapping: Parameters retrieved for connection: {0}", this.database.toString());
             this.getConnection(logger) ;
         }
@@ -147,7 +147,7 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
             try {
                 Context cntx = new InitialContext() ;
                 this.dataSource = (DataSource)cntx.lookup( (String)this.database.get( "jndi-datasource" ) );
-                this.ut = (UserTransaction)cntx.lookup( (String)this.database.get( "jndi-transaction" ) ) ;
+//                this.ut = (UserTransaction)cntx.lookup( (String)this.database.get( "jndi-transaction" ) ) ;
             } catch ( javax.naming.NamingException e ) {
                 logger.log(Level.SEVERE, "NamingException in DatabaseMapping.getConnection: {0}", e);
                 throw new java.sql.SQLException( "Could not instantiate Connection Pool: " + e ) ;
