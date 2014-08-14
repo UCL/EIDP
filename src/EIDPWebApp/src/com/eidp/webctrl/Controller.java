@@ -8,23 +8,25 @@ package com.eidp.webctrl;
 
 import com.eidp.UserScopeObject.UserScopeObject ;
 import com.eidp.core.DB.DBMappingRemote;
-import com.eidp.webctrl.modules.EIDPModuleLoader ;
+import com.eidp.webctrl.WebAppCache.EIDPWebAppCache ;
 import com.eidp.webctrl.modules.EIDPAddInLoader;
-import java.io.PrintWriter;
+import com.eidp.webctrl.modules.EIDPModuleLoader;
+import com.eidp.webctrl.modules.Document;
+import com.eidp.webctrl.modules.DocumentFactory;
 import com.eidp.xml.XMLDataAccess;
-import com.eidp.webctrl.WebAppCache.EIDPWebAppCache;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletConfig;
+import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.Vector;
+import javax.servlet.ServletConfig ;
+import javax.servlet.http.HttpServlet ;
+import javax.servlet.http.HttpServletRequest ;
+import javax.servlet.http.HttpServletResponse ;
+import org.w3c.dom.Node ;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import java.util.HashMap ;
-import java.util.Vector ;
-import java.util.Set ;
-import java.util.Iterator ;
-import java.util.Date ;
 
 
 /**
@@ -228,6 +230,10 @@ public class Controller extends HttpServlet {
                     PrintWriter out = response.getWriter();
                     out.println("<html><head></head><body><h1>" + e.getCause().getMessage() + "</h1></html>");
                 }
+            } else if ( ((String)uso.eidpWebAppCache.sessionData_get("module")).equals("Letter") ) {
+                String docName = (String)uso.eidpWebAppCache.sessionData_get( "moduleParameter" ) ;
+                Document document = DocumentFactory.getLetterHandler(docName);
+                StreamPrint streamPrint = new StreamPrint(response, uso, document);
             }
         }
     }
