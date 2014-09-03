@@ -228,10 +228,11 @@ public class Controller extends HttpServlet {
                 } catch ( java.lang.reflect.InvocationTargetException e ) {
                     response.setContentType("text/html");
                     PrintWriter out = response.getWriter();
-                    out.println("<html><head></head><body><h1>" + e.getCause().getMessage() + "</h1></html>");
+                    out.println("<html><head></head><body><h1>" + e.toString() + "</h1></html>");
                 }
             } else if ( ((String)uso.eidpWebAppCache.sessionData_get("module")).equals("Letter") ) {
                 String docName = (String)uso.eidpWebAppCache.sessionData_get( "moduleParameter" ) ;
+                uso.eidpWebAppCache.sessionRef_set("letter-parameters", request.getParameterMap());
                 Document document = DocumentFactory.getLetterHandler(docName);
                 StreamPrint streamPrint = new StreamPrint(response, uso, document);
             }
