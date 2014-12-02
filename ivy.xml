@@ -19,6 +19,8 @@
     <dependency org="org.apache.xmlgraphics" name="batik-svggen" rev="1.7"/>
     <dependency org="org.apache.xmlgraphics" name="batik-dom" rev="1.7"/>
     <dependency org="org.testng" name="testng" rev="6.8" conf="test->default"/>
+    <dependency org="org.mockito" name="mockito-core" rev="1.9.5" conf="test->default"/>
+    <dependency org="org.objenesis" name="objenesis" rev="2.1" conf="test->default"/>
     <dependency org="org.glassfish.main.extras" name="glassfish-embedded-all" rev="3.1.2" conf="test->default"/>
     <dependency org="javax" name="javaee-api" rev="6.0" conf="provided"/>
   </dependencies>

@@ -165,8 +165,10 @@ public class Login extends HttpServlet {
         out.println("<!--");
         out.println( "if (top != self)" ) ;
         out.println( "  top.location = self.location;" ) ;
-        String appURL = request.getRequestURL().substring(0,request.getRequestURL().lastIndexOf(".")) +
-                ".Controller?applicationContext=" + ((String)this.metaInformation.get("project")).toLowerCase();
+//        String appURL = request.getRequestURL().substring(0,request.getRequestURL().lastIndexOf(".")) +
+//                ".Controller?applicationContext=" + ((String)this.metaInformation.get("project")).toLowerCase();
+        String appURL = request.getContextPath() + request.getServletPath() +
+                "?applicationContext=" + ((String)this.metaInformation.get("project")).toLowerCase();
         out.println( "function relogin(){ " ) ;
         out.println( "  self.location='" + appURL + "';" ) ;
         out.println( "}" ) ;
