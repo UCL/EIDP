@@ -1219,7 +1219,7 @@ public class Controller extends HttpServlet {
         if ( blockPassword == false ) {
             printWriter.println( "          <button type=\"button\" onClick=\"XWindowOpener( 'Function;PasswordModule' );\"><font size=\"-1\"><b>Change Password</b></font></button> " ) ;
         }
-        printWriter.println( "          <button type=\"button\" onClick=\"parent.Data.location.href='/EIDPWebApp/servlet/com.eidp.webctrl.Controller?module=Function;SponsorsPage;show'\"><font size=\"-1\"><b>Sponsors</b></font></button> " ) ;
+        printWriter.println( "          <button type=\"button\" onClick=\"parent.Data.location.href='/EIDPWebApp/servlet/com.eidp.webctrl.Controller?module=Function;logout;show'\"><font size=\"-1\"><b>Log out</b></font></button> " ) ;
         printWriter.println( "        </td>" ) ;
         printWriter.println( "      </tr> " ) ;
         printWriter.println( "    </table> " ) ;
