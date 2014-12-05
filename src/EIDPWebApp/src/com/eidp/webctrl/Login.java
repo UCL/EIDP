@@ -48,8 +48,7 @@ public class Login extends HttpServlet {
     
     private String applicationContext ;
     private String xmlfile ;
-    private XMLDataAccess xmlDataAccess ;
-    
+    private XMLDataAccess xmlDataAccess ;    
     private String applicationName ;
     private String applicationLogo ;
     private String applicationInfo = "";
@@ -61,7 +60,8 @@ public class Login extends HttpServlet {
     private String loginErrMessage = "";
     private String loginDisableMessage = "";
     private String loginAutoLogoutMessage = "";
-    
+    private String loginResetMessage = "";
+    private String resetLoginTimeout = "10";
     
     
     /** Initializes the servlet.
@@ -121,6 +121,11 @@ public class Login extends HttpServlet {
                 try {
                     this.loginAutoLogoutMessage = (String)((Vector)this.xmlDataAccess.getElementsByName( "login-configuration,auto-logout-message" )).get( 0 ) ;
                 } catch ( java.lang.ArrayIndexOutOfBoundsException aiobe ) { }
+                if ( request.getParameter( "relogin" ) != null && request.getParameter( "relogin" ).equals("true") ) {
+                    try {
+                        this.loginResetMessage = (String)((Vector)this.xmlDataAccess.getElementsByName( "login-configuration,login-reset-message" )).get( 0 ) ;
+                    } catch ( java.lang.ArrayIndexOutOfBoundsException aiobe ) { }
+                }
             } else {
                 this.loginAutoLogoutMessage = "";
             }
@@ -128,6 +133,8 @@ public class Login extends HttpServlet {
                 this.loginErrMessage = this.loginDisableMessage;
             } else if (!this.loginAutoLogoutMessage.equals("")){
                 this.loginErrMessage = this.loginAutoLogoutMessage;
+            } else if (!this.loginResetMessage.equals("")) {
+                this.loginErrMessage = this.loginResetMessage;
             }
 
             this.metaInformation.put( "copyright" , (String)((Vector)this.xmlDataAccess.getElementsByName( "meta-information,copyright" )).get( 0 ) ) ;
@@ -136,6 +143,9 @@ public class Login extends HttpServlet {
                 this.applicationLogo = (String)((Vector)this.xmlDataAccess.getElementsByName( "login-configuration,app-logo" )).get( 0 ) ;
             } else {
                 this.applicationLogo = "eidp_logo.jpg";
+            }
+            if (!this.xmlDataAccess.getElementsByName("login-configuration,reset-timeout").isEmpty()) {
+                this.resetLoginTimeout = (String)((Vector)this.xmlDataAccess.getElementsByName("login-configuration,reset-timeout")).get(0);
             }
             this.sponsorName = (Vector)this.xmlDataAccess.getElementsByName( "login-configuration,sponsor,name" ) ;
             this.sponsorLogo = (Vector)this.xmlDataAccess.getElementsByName( "login-configuration,sponsor,logo" ) ;
@@ -172,6 +182,14 @@ public class Login extends HttpServlet {
         out.println( "function relogin(){ " ) ;
         out.println( "  self.location='" + appURL + "';" ) ;
         out.println( "}" ) ;
+        out.println( "<script language=\"JavaScript\"> " ) ;
+        out.println( "  function autoLogout(){" ) ;
+        out.println( "      var url=\"/EIDPWebApp/servlet/com.eidp.webctrl.Controller?module=Function;logout;show&autologout=true&relogin=true\";" ) ;
+        out.println( "      location.href=url;" ) ;
+        out.println( "  }" ) ;
+            // Auto-logout nach der in der application.xml definierten Anzahl von Minuten
+        out.println( "  window.setTimeout(\"autoLogout()\", " + this.resetLoginTimeout + "*60000);" ) ;
+        out.println( "</script> " ) ;
         out.println( "function getCookie(name){ " ) ;
         out.println( "  var pos;" ) ;
         out.println( "  var token = name + \"=\";" ) ;
@@ -260,9 +278,13 @@ public class Login extends HttpServlet {
         out.println( "<table id=\"login\" border=\"0\">" ) ;
         if(!this.loginErrMessage.trim().equals("")){
             out.println(" <tr><td id=\"login-msg\" colspan=\"2\">" + this.loginErrMessage + "</td></tr> " ) ;
-        }
+        } 
         if(!this.loginAutoLogoutMessage.equals("")){
             out.println(" <tr><td colspan=\"2\" align=\"center\"><input type=\"button\" value=\"RELOGIN\" onClick=\"relogin();\"></td></tr> " ) ;
+            out.println(" </table> " ) ;
+            out.println(" </form>" ) ;
+        } else if (!this.loginResetMessage.equals("")) {
+            out.println(" <tr><td colspan=\"2\" align=\"center\"><input type=\"button\" value=\"LOGIN\" onClick=\"relogin();\"></td></tr> " ) ;
             out.println(" </table> " ) ;
             out.println(" </form>" ) ;
         } else {
