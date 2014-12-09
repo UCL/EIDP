@@ -102,7 +102,7 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
             String key = (String)pi.next() ;
             String value = (String)paramMap.get( key ) ;
             if ( value != null ) {
-                value = value.replace( '\'' , '-' ) ;
+                value = value.replace( "'" , "''" ) ;
                 paramMap.put( key , value ) ;
             }
         }
