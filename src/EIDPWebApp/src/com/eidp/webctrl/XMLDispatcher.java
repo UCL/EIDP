@@ -952,7 +952,7 @@ public class XMLDispatcher {
             printWriter.println( " } " ) ;
             printWriter.println( "</script> " ) ;
         }
-        printWriter.print( "<nobr><p><a href='javascript:" + formName + "_" + fieldName + "_setOption( \"" + setPrimaryFieldValue + "\" , \"" + setSecondaryFieldValue + "\" )'>" + fieldValue + "</a></p>" ) ;
+        printWriter.print( "<nobr><p><a href='javascript:" + formName + "_" + fieldName + "_setOption( \"" + encodeHTML(setPrimaryFieldValue) + "\" , \"" + encodeHTML(setSecondaryFieldValue) + "\" )'>" + fieldValue + "</a></p>" ) ;
     }
     
     // include calculate values
@@ -3635,6 +3635,19 @@ public class XMLDispatcher {
         String month = strto.nextToken();
         String year = strto.nextToken();
         return year + "-" + month + "-" + day;
+    }
+    
+    private static String encodeHTML(String s) {
+        StringBuffer out = new StringBuffer();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c > 127 || c == '"' || c == '<' || c == '>' || c == '\'' || c == '&') {
+                out.append("&#" + (int) c + ";");
+            } else {
+                out.append(c);
+            }
+        }
+        return out.toString();
     }
     
 }
