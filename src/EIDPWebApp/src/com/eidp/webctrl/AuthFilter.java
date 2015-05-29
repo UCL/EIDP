@@ -205,7 +205,7 @@ public class AuthFilter implements Filter {
                 if ( request.getParameter( "module" ) != null ) {
                     if ( ((String)request.getParameter( "module" )).equals( "Function;logout;show" ) ) {
                         this.logger.logMessage( "<-- " + uso.eidpWebAppCache.sessionData_get("userLogin") + " has logged out !" ) ;
-                        this.sessionInvalidate( session , uso ) ;
+                        //this.sessionInvalidate( session , uso ) ;
                         //session.invalidate() ;
                         sessionUpdate = false ;
                     } else if ( ((String)request.getParameter( "module" )).equals( "PlugIn" ) ) {
@@ -305,12 +305,8 @@ public class AuthFilter implements Filter {
             if ( this.hasLoginError ) {
                 strMessage = "?hasLoginError=true";
             }
-            uso.eidpWebAppCache.sessionData_clear() ;
-            uso.eidpWebAppCache.userRoles_clear() ;
-            uso.eidpWebAppCache.centerRoles_clear() ;
-            uso.eidpWebAppCache.sessionRef_clear() ;
-            uso.eidpWebAppCache.sidePanelEntry_set( "" ) ;
-            uso.eidpWebAppCache.sessionData_set( "applicationContext" , uso.applicationContext ) ;
+            this.sessionInvalidate( session , uso ) ;
+            this.killAllSessionData(session, uso);
             this.logger.logMessage( "--> Request will be dispatched to /servlet/com.eidp.webctrl.Login" + strMessage ) ;
             RequestDispatcher requestDispatcher = request.getRequestDispatcher( "/servlet/com.eidp.webctrl.Login" + strMessage ) ;
             requestDispatcher.forward( request , response ) ;
