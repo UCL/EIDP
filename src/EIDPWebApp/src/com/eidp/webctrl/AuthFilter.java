@@ -442,11 +442,11 @@ public class AuthFilter implements Filter {
             dbm.remove();
             session.removeAttribute( "dbMapperHandle" ) ;
         }
-        if (session.getAttribute("eidpWebAppCacheHandle") != null) {
-            EIDPWebAppCache wac = (EIDPWebAppCache) session.getAttribute("eidpWebAppCacheHandle");
-            wac.remove();
-            session.removeAttribute("eidpWebAppCacheHandle");
-        }
+//        if (session.getAttribute("eidpWebAppCacheHandle") != null) {
+//            EIDPWebAppCache wac = (EIDPWebAppCache) session.getAttribute("eidpWebAppCacheHandle");
+//            wac.remove();
+//            session.removeAttribute("eidpWebAppCacheHandle");
+//        }
     }
     
     /**
