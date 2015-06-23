@@ -736,6 +736,8 @@ public class XMLDispatcher {
             if( !FormCheck.equals("") ){
                 printWriter.println( "          if ( " + FormCheck + " )  " ) ;
             }
+            printWriter.println( "              document." + formName + ".submitbutton.disabled = true ;" ) ;
+            printWriter.println( "              document." + formName + ".submitbutton.value = \"Please wait...\" ;" ) ;
             //////////// Stephan Ende
             printWriter.println( "              document." + formName + ".submit() ;" ) ;
             printWriter.println( "      } " ) ;
@@ -2060,7 +2062,7 @@ public class XMLDispatcher {
         printWriter.println( "</table> " ) ;
         // Write-Permissions-Check
         if ( wP == true ) {
-            printWriter.println( "<input type=\"button\" value=\"Submit\" style=\"BACKGROUND-COLOR: #DC143C; COLOR: #FFFF00\" onClick=\"javascript:" + formName + "_CheckAndSubmit()\" >&nbsp;<input type=\"reset\" value=\"Clear\" onClick=\"javascript:clearCheckForView('" + formName + "');\"> " ) ;
+            printWriter.println( "<input type=\"button\" value=\"Submit\" name=\"submitbutton\" style=\"BACKGROUND-COLOR: #DC143C; COLOR: #FFFF00\" onClick=\"javascript:" + formName + "_CheckAndSubmit()\" >&nbsp;<input type=\"reset\" value=\"Clear\" onClick=\"javascript:clearCheckForView('" + formName + "');\"> " ) ;
         }
         // Add the new defined Buttons at the end of the Table // Stephan
         printWriter.println( strButtons );
@@ -2116,7 +2118,7 @@ public class XMLDispatcher {
         }
         if ( wP == true ) {
             printWriter.println( "<br>" ) ;
-            printWriter.println( "<input type=\"button\" value=\"Submit\" style=\"BACKGROUND-COLOR: #DC143C; COLOR: #FFFF00\" onClick=\"javascript:" + formName + "_CheckAndSubmit()\" >&nbsp;<input type=\"reset\" value=\"Clear\" onClick=\"javascript:clearCheckForView('" + formName + "');\"> " ) ;
+            printWriter.println( "<input type=\"button\" value=\"Submit\" name=\"submitbutton\" style=\"BACKGROUND-COLOR: #DC143C; COLOR: #FFFF00\" onClick=\"javascript:" + formName + "_CheckAndSubmit()\" >&nbsp;<input type=\"reset\" value=\"Clear\" onClick=\"javascript:clearCheckForView('" + formName + "');\"> " ) ;
         }
         // >>>>>>>>>>>>>>>>>>>>>>>>>
         // write matrix
@@ -2483,7 +2485,7 @@ public class XMLDispatcher {
         if ( noNew == false ) {
             if ( wP == true ) {
                 printWriter.println( "<br>" ) ;
-                printWriter.println( "<input type=\"button\" value=\"Submit\" style=\"BACKGROUND-COLOR: #DC143C; COLOR: #FFFF00\" onClick=\"javascript:" + formName + "_CheckAndSubmit()\" >&nbsp;<input type=\"reset\" value=\"Clear\" onClick=\"javascript:clearCheckForView('" + formName + "');\"> " ) ;
+                printWriter.println( "<input type=\"button\" value=\"Submit\" name=\"submitbutton\" style=\"BACKGROUND-COLOR: #DC143C; COLOR: #FFFF00\" onClick=\"javascript:" + formName + "_CheckAndSubmit()\" >&nbsp;<input type=\"reset\" value=\"Clear\" onClick=\"javascript:clearCheckForView('" + formName + "');\"> " ) ;
             }
             printWriter.println( " <table border=\"0\" cellspacing=\"0\"> " ) ;
             printWriter.println( "      <tr>" ) ;
