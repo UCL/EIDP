@@ -84,7 +84,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
     @Override
     public void setApplicationContext(String applicationContext) throws IOException {
         this.applicationContext = applicationContext;
-                this.logger = Logger.getLogger("com.eidp.core.DB.DBMapping."+this.applicationContext+"."+this.context.hashCode());
+        this.logger = Logger.getLogger("com.eidp.core.DB.DBMapping."+this.applicationContext+"."+this.context.hashCode());
         // this.fh = new FileHandler("/com/eidp/logs/core/Core."+this.applicationContext+"."+this.context.hashCode()+".log");
         // this.logger.addHandler(fh);
         this.logger.setLevel(Level.INFO);
@@ -679,6 +679,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
     @Remove
     @Override
     public void remove() {
+        this.logger = Logger.getLogger("com.eidp.core.DB.DBMapping."+this.applicationContext+"."+this.context.hashCode());
         this.logger.info("DBMapping: Removing EJB");
         this.xmlDataAccess = null ;
         Set dsKey = this.dataSourceClasses.keySet() ;
