@@ -106,7 +106,6 @@ public class XMLDispatcher {
         if ( ((String)uso.eidpWebAppCache.sessionData_get( "moduleAction" )).equals( "show" ) ) {
             String filterfile = "/com/eidp/" + uso.applicationContext + "/resources/webctrl/filters.xml" ;
             uso.xmlFilterAccess = new XMLDataAccess( filterfile ) ;
-            System.out.println("---7");
             uso.Filters = (Vector)uso.xmlFilterAccess.getNodeListsByName( "filter" ) ;
             uso.FilterNames = (Vector)uso.xmlFilterAccess.getElementsByName( "filter,name" ) ;
             if ( uso.Filters.size() != uso.FilterNames.size() ) {
