@@ -157,7 +157,7 @@ public class DataBaseMapping extends DataSourceMapping implements DataSourceAPI 
     
     public void closeConnection( Logger logger ) throws Exception , java.sql.SQLException {
         logger.info( "DataBaseMapping: trying to close database connection" ) ;
-        if ( this.dbType.equals( "Jdbc" ) ) {
+        if ( this.dbType.equals( "Jdbc" ) || this.dbType.equals( "Pool" ) ) {
             this.connection.close() ;
         }
         this.connection = null ;
