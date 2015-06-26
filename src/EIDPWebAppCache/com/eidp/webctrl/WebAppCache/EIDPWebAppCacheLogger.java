@@ -27,7 +27,7 @@ public class EIDPWebAppCacheLogger {
         if (null != parameters && parameters.length == 1) {
             ctx = (String) parameters[0];
         }
-        if (!"".equals(ctx)) {
+        if (null != ctx && !"".equals(ctx)) {
             EIDPWebAppCacheLogger.logger = new Logger( "/com/eidp/" + ctx + "/WebAppCache.log" );
             EIDPWebAppCacheLogger.logger.logMessage( "Initializing WebAppCacheLog with Context: " + ctx + "." );
         }

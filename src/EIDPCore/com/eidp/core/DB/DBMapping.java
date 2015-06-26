@@ -679,7 +679,7 @@ public class DBMapping implements HttpSessionListener, DBMappingRemote {
     @Remove
     @Override
     public void remove() {
-        this.logger = Logger.getLogger("com.eidp.core.DB.DBMapping."+this.context.hashCode());
+        this.logger = Logger.getLogger("com.eidp.core.DB.DBMapping");
         this.logger.info("DBMapping: Removing EJB");
         this.xmlDataAccess = null ;
         Set dsKey = this.dataSourceClasses.keySet() ;
